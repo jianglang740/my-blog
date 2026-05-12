@@ -2,7 +2,7 @@
     languageCode      = "zh-cn"
     languageName      = "中文"
     languagedirection = "ltr"
-    title             = "我的博客"
+    title             = "量化投资与机器学习个人技术博客"
     weight            = 1
 
 [en]
