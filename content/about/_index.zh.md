@@ -1,8 +1,16 @@
 ---
 title: "关于我的一些信息："
 layout: page
+features:
+  - icon: "💻"
+    title: "技术开发"
+    description: "专注于量化投资与机器学习"
+    url: "https://github.com/jianglang740"
+  - icon: "📊"
+    title: "数据分析"
+    description: "精通 Python 数据分析工具"
+    url: "https://github.com/jianglang740"
 ---
-
 - 欢迎来到我的个人技术博客！
 
 ## 👋 自我介绍
@@ -35,4 +43,3 @@ layout: page
 ---
 
 *感谢你的访问！欢迎与我交流讨论。*
-

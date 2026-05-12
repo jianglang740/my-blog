@@ -1,0 +1,42 @@
+{{ define "main" }}
+    <article class="page-wrapper">
+        <!-- Hero Section -->
+        {{ if or .Title .Params.subtitle }}
+        <header class="page-header">
+            <h1 class="page-title">{{ .Title }}</h1>
+            {{ with .Params.subtitle }}
+                <p class="page-subtitle">{{ . }}</p>
+            {{ end }}
+        </header>
+        {{ end }}
+
+        <!-- Content Section -->
+        <section class="page-content">
+            {{ .Content }}
+        </section>
+
+        <!-- Feature Cards (Optional) -->
+        {{ if .Params.features }}
+        <section class="page-features">
+            <div class="features-grid">
+                {{ range .Params.features }}
+                {{ if .url }}
+                <a href="{{ .url }}" class="feature-card feature-card-link" target="{{ .target | default "_blank" }}" rel="noopener noreferrer">
+                    <div class="feature-icon">{{ .icon }}</div>
+                    <h3 class="feature-title">{{ .title }}</h3>
+                    <p class="feature-desc">{{ .description }}</p>
+                    <span class="feature-link-arrow">→</span>
+                </a>
+                {{ else }}
+                <div class="feature-card">
+                    <div class="feature-icon">{{ .icon }}</div>
+                    <h3 class="feature-title">{{ .title }}</h3>
+                    <p class="feature-desc">{{ .description }}</p>
+                </div>
+                {{ end }}
+                {{ end }}
+            </div>
+        </section>
+        {{ end }}
+    </article>
+{{ end }}
