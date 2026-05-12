@@ -17,8 +17,7 @@ SortBy              = "default"
 
 [sidebar]
     emoji    = "🚀"
-    subtitle = "My name is Jiang Lang, and I’m a student at Shandong University of Finance and Economics. I have a strong passion for machine learning and quantitative investing. This is my personal tech blog, where I will regularly share my learning insights and showcase my projects.
-"
+    subtitle = "我叫蒋浪，来自山东财经大学，对机器学习与量化投资兴趣极大，这是我的个人技术博客，我将在这里定期更新我的学习见解和项目展示"
     avatar   = "img/avatar.jpg"
 
 [article]
