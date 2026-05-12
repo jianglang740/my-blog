@@ -8,7 +8,7 @@ favicon        = "img/favicon.jpg"
 SortBy              = "default"
 
 [footer]
-    customText = "这里可以自定义footer内容"
+    customText = "🌊纵有千古，横有八荒，前途似海，来日方长☀️"
 
 [dateFormat]
     # 使用当地日期格式
