@@ -17,7 +17,7 @@ SortBy              = "default"
 
 [sidebar]
     emoji    = "🤖"
-    subtitle = "我叫蒋浪，来自山东财经大学，对机器学习与量化投资兴趣极大，这是我的个人技术博客，我将在这里定期更新我的学习见解和项目展示"
+    subtitle = "我叫蒋浪，来自山东财经大学，对机器学习与量化投资、CODE等兴趣极大，这是我的个人技术博客，我将在这里定期更新我的学习见解和项目展示"
     avatar   = "img/avatar.jpg"
 
 [article]
