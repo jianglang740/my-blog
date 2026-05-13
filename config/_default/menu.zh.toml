@@ -15,14 +15,6 @@
         icon = "archives"
 
 [[main]]
-    identifier = "about"
-    name       = "关于我"
-    url        = "/about/"
-    weight     = 3
-    [main.params]
-        icon = "user"
-
-[[main]]
     identifier = "search"
     name       = "搜索"
     url        = "/search/"
