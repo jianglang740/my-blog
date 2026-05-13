@@ -1,14 +1,3 @@
-# Hugo Theme Stack Starter
-
-**中文** | [English](README.en.md)
-
-一个基于 [Hugo Theme Stack v4](https://github.com/CaiJimmy/hugo-theme-stack) 的**开箱即用博客模板**，在原主题基础上做了一系列美化和功能增强。
-
-> 📢 本项目已设置为 **GitHub Template**，点击右上角 **"Use this template"** 即可一键创建你自己的博客仓库，无需 Fork。
-> 
-> 🌐 **在线预览 (Live Demo)**: [https://liu-houliang.github.io/hugo-stack-starter/](https://liu-houliang.github.io/hugo-stack-starter/)
-
----
 
 ## ✨ 特性
 
@@ -170,14 +159,3 @@ hugo-stack-starter/
 
 ---
 
-## 🙏 致谢
-
-- 主题基于 [Hugo Theme Stack](https://github.com/CaiJimmy/hugo-theme-stack) by [@CaiJimmy](https://github.com/CaiJimmy)
-- 评论系统 [Waline](https://waline.js.org/)
-- 静态站点生成器 [Hugo](https://gohugo.io/)
-
----
-
-## 📄 许可证
-
-本项目采用 [GPL-3.0](LICENSE) 许可证。
