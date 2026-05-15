@@ -1,6 +1,6 @@
 ---
 title: "经典量化回测框架之BackTrader"
-description: "技术栈"
+description: "Backtrader是一个开源且优美的量化回测框架，本文对其进行了学习讲解"
 date: 2026-05-13
 lastmod: 2026-05-13
 weight: 4

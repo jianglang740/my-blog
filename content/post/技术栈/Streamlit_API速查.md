@@ -1,6 +1,6 @@
 ---
 title: "Streamlit API速查表"
-description: "技术栈"
+description: "Streamlit是一个机器学习与数据科学领域的可视化库，可以帮助我们轻松搭建web页面"
 date: 2026-05-13
 lastmod: 2026-05-13
 weight: 4
