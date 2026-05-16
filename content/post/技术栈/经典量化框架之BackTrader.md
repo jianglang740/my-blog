@@ -10,6 +10,7 @@ categories:
 tags:
     - 教程
     - 技术栈
+    - backtrader
 ---
 
 # 经典量化回测框架之BackTrader

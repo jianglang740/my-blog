@@ -10,6 +10,7 @@ categories:
 tags:
     - 教程
     - 技术栈
+    - streamlit
 ---
 
 
