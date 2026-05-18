@@ -1,8 +1,8 @@
 ---
 title: "动量➕均线多头策略回测及基于streamlit的交互式web页面构建"
 description: "经典多头策略之“动量+均线”的代码模块化回测及基于streamlit搭建的交互式web页面全流程"
-date: 2026-05-018
-lastmod: 2026-05-018
+date: 2026-05-18
+lastmod: 2026-05-18
 weight: 4
 categories:
     - Quant
