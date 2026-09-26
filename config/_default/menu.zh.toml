@@ -15,10 +15,34 @@
         icon = "archives"
 
 [[main]]
+    identifier = "projects"
+    name       = "项目"
+    pageRef    = "/projects"
+    weight     = 3
+    [main.params]
+        icon = "briefcase"
+
+[[main]]
+    identifier = "about"
+    name       = "关于我"
+    url        = "/about/"
+    weight     = 4
+    [main.params]
+        icon = "user"
+
+[[main]]
+    identifier = "stats"
+    name       = "统计"
+    url        = "/stats/"
+    weight     = 5
+    [main.params]
+        icon = "analytics"
+
+[[main]]
     identifier = "search"
     name       = "搜索"
     url        = "/search/"
-    weight     = 4
+    weight     = 6
     [main.params]
         icon = "search"
 
