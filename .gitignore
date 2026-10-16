@@ -4,3 +4,6 @@ resources
 .DS_Store
 assets/jsconfig.json
 .vscode/
+
+# 教程原始素材，只作为整理来源，不进仓库
+freqtrade-tutorials-main/

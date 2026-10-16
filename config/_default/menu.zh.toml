@@ -23,10 +23,18 @@
         icon = "briefcase"
 
 [[main]]
+    identifier = "freqtrade"
+    name       = "Freqtrade 课程"
+    pageRef    = "/post/freqtrade量化交易实战"
+    weight     = 4
+    [main.params]
+        icon = "school"
+
+[[main]]
     identifier = "about"
     name       = "关于我"
     url        = "/about/"
-    weight     = 4
+    weight     = 5
     [main.params]
         icon = "user"
 
@@ -34,7 +42,7 @@
     identifier = "stats"
     name       = "统计"
     url        = "/stats/"
-    weight     = 5
+    weight     = 6
     [main.params]
         icon = "analytics"
 
@@ -42,7 +50,7 @@
     identifier = "search"
     name       = "搜索"
     url        = "/search/"
-    weight     = 6
+    weight     = 7
     [main.params]
         icon = "search"
 

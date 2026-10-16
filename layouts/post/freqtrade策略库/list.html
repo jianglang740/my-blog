@@ -1,0 +1,27 @@
+{{ define "main" }}
+    {{/* 策略库的章节页：_index.zh.md 里已经排好了三栏索引和全部链接，
+         所以这里只需要把正文渲染出来。主题默认的 list.html 不渲染 .Content。 */}}
+    <header>
+        <h3 class="section-title">{{ .Title }}</h3>
+
+        <div class="section-card">
+            <div class="section-details">
+                <h3 class="section-count">{{ T "list.page" (len .Pages) }}</h3>
+                <h1 class="section-term">{{ .Title }}</h1>
+                {{ with .Params.description }}
+                    <h2 class="section-description">{{ . }}</h2>
+                {{ end }}
+            </div>
+        </div>
+    </header>
+
+    <article class="article-content">
+        {{ .Content }}
+    </article>
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}
+
+{{ define "right-sidebar" }}
+    {{ partial "sidebar/right.html" (dict "Context" . "Scope" "homepage") }}
+{{ end }}
