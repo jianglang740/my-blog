@@ -1,0 +1,23 @@
+{{/* 课程章节页：与策略库同理，复用主题的文章模板来渲染 _index.zh.md 的大纲正文，
+     以拿到 article-page 作用域下的卡片背景、标题区与表格 wrapper。 */}}
+
+{{ define "body-class" }}
+    {{- $TOCWidgetEnabled := false -}}
+    {{- range .Site.Params.widgets.page -}}
+        {{- if eq .type "toc" -}}{{- $TOCWidgetEnabled = true -}}{{- end -}}
+    {{- end -}}
+    {{- $hasTOC := ge (len .TableOfContents) 100 -}}
+    {{- .Scratch.Set "TOCEnabled" (and (not (eq .Params.toc false)) $TOCWidgetEnabled $hasTOC) -}}
+    {{- .Scratch.Set "hasWidget" (.Scratch.Get "TOCEnabled") -}}
+    {{- /* 用 print 输出，避免把模板缩进的换行带进 class 属性 */ -}}
+    {{- print "article-page" -}}
+{{ end }}
+
+{{ define "main" }}
+    {{ partial "article/article.html" . }}
+    {{ partialCached "footer/footer" . }}
+{{ end }}
+
+{{ define "right-sidebar" }}
+    {{ if .Scratch.Get "hasWidget" }}{{ partial "sidebar/right.html" (dict "Context" . "Scope" "page") }}{{ end }}
+{{ end }}

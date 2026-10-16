@@ -2,7 +2,7 @@
     identifier = "home"
     name       = "首页"
     url        = "/"
-    weight     = 1
+    weight     = 2
     [main.params]
         icon = "home"
 
@@ -10,7 +10,7 @@
     identifier = "archives"
     name       = "所有文章"
     url        = "/archives/"
-    weight     = 2
+    weight     = 3
     [main.params]
         icon = "archives"
 
@@ -18,23 +18,31 @@
     identifier = "projects"
     name       = "项目"
     pageRef    = "/projects"
-    weight     = 3
+    weight     = 4
     [main.params]
         icon = "briefcase"
 
 [[main]]
     identifier = "freqtrade"
     name       = "Freqtrade 课程"
-    pageRef    = "/post/freqtrade量化交易实战"
-    weight     = 4
+    pageRef    = "/post/freqtrade"
+    weight     = 5
     [main.params]
         icon = "school"
+
+[[main]]
+    identifier = "strategies"
+    name       = "策略库"
+    pageRef    = "/post/freqtrade-strategies"
+    weight     = 6
+    [main.params]
+        icon = "chart-candle"
 
 [[main]]
     identifier = "about"
     name       = "关于我"
     url        = "/about/"
-    weight     = 5
+    weight     = 7
     [main.params]
         icon = "user"
 
@@ -42,7 +50,7 @@
     identifier = "stats"
     name       = "统计"
     url        = "/stats/"
-    weight     = 6
+    weight     = 1
     [main.params]
         icon = "analytics"
 
@@ -50,7 +58,7 @@
     identifier = "search"
     name       = "搜索"
     url        = "/search/"
-    weight     = 7
+    weight     = 8
     [main.params]
         icon = "search"
 

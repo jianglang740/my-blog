@@ -1,0 +1,25 @@
+{{/* 策略库是章节页（branch bundle），但内容形态是一篇文章——有导读、表格、TOC。
+     主题默认的 list.html 只列子页面、不渲染 .Content，直接改渲染 .Content 又会丢掉
+     article-page 作用域（卡片背景、阴影、表格 wrapper），所以这里让章节页复用主题的
+     文章模板，视觉上与站内其它文章完全一致。 */}}
+
+{{ define "body-class" }}
+    {{- $TOCWidgetEnabled := false -}}
+    {{- range .Site.Params.widgets.page -}}
+        {{- if eq .type "toc" -}}{{- $TOCWidgetEnabled = true -}}{{- end -}}
+    {{- end -}}
+    {{- $hasTOC := ge (len .TableOfContents) 100 -}}
+    {{- .Scratch.Set "TOCEnabled" (and (not (eq .Params.toc false)) $TOCWidgetEnabled $hasTOC) -}}
+    {{- .Scratch.Set "hasWidget" (.Scratch.Get "TOCEnabled") -}}
+    {{- /* 用 print 输出，避免把模板缩进的换行带进 class 属性 */ -}}
+    {{- print "article-page" -}}
+{{ end }}
+
+{{ define "main" }}
+    {{ partial "article/article.html" . }}
+    {{ partialCached "footer/footer" . }}
+{{ end }}
+
+{{ define "right-sidebar" }}
+    {{ if .Scratch.Get "hasWidget" }}{{ partial "sidebar/right.html" (dict "Context" . "Scope" "page") }}{{ end }}
+{{ end }}
