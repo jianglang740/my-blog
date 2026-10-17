@@ -1,0 +1,487 @@
+/* 研究仪表盘：/factor/ 与 /cta/ 共用
+ * 数据由 layouts/_partials/research/dashboard.html 计算，这里只负责排版。
+ * 颜色沿用主题变量，徽章色只在本组件内定义。 */
+
+.research-dashboard {
+    --research-badge-done: #2f7d52;
+    --research-badge-doing: var(--accent-color);
+    --research-badge-exploring: #9a6b00;
+    --research-badge-paused: #6b7280;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-separation);
+    min-width: 0;
+}
+
+/* ---------- 页头 ---------- */
+
+.research-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.research-kicker {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+}
+
+.research-title {
+    margin: 0;
+    font-size: 3.2rem;
+    line-height: 1.2;
+    color: var(--card-text-color-main);
+}
+
+.research-description {
+    margin: 0;
+    max-width: 68ch;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: var(--card-text-color-secondary);
+}
+
+.research-header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs) var(--spacing-lg);
+    margin-top: var(--spacing-xs);
+    font-size: 1.3rem;
+    color: var(--card-text-color-tertiary);
+}
+
+/* ---------- 引言正文 ---------- */
+
+.research-intro {
+    max-width: 72ch;
+
+    > :first-child {
+        margin-top: 0;
+    }
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* ---------- KPI 卡片 ---------- */
+
+.research-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+
+    @include respond(md) {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.research-kpi {
+    @include card-style;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--card-padding);
+    border: 1px solid var(--card-border);
+}
+
+.research-kpi-value {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--card-text-color-main);
+    font-variant-numeric: tabular-nums;
+}
+
+.research-kpi-label {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--card-text-color-secondary);
+}
+
+.research-kpi-hint {
+    font-size: 1.2rem;
+    color: var(--card-text-color-tertiary);
+}
+
+/* ---------- 分区标题 ---------- */
+
+.research-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.research-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--card-separator-color);
+}
+
+.research-section-title {
+    margin: 0;
+    font-size: 1.9rem;
+    color: var(--card-text-color-main);
+}
+
+.research-section-note {
+    font-size: 1.3rem;
+    color: var(--card-text-color-tertiary);
+}
+
+.research-section-link {
+    font-size: 1.3rem;
+    color: var(--accent-color);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+/* ---------- 研究方向 ---------- */
+
+.research-directions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-md);
+
+    @include respond(lg) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.research-direction {
+    @include card-style;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--card-padding);
+    border: 1px solid var(--card-border);
+}
+
+.research-direction-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+.research-direction-title {
+    margin: 0;
+    font-size: 1.7rem;
+    line-height: 1.3;
+    color: var(--card-text-color-main);
+}
+
+.research-direction-question {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.6;
+    color: var(--card-text-color-secondary);
+}
+
+.research-direction-summary {
+    margin: 0;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: var(--card-text-color-tertiary);
+}
+
+.research-direction-latest {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-left: 3px solid var(--accent-color);
+    background: var(--card-background-selected);
+    border-radius: 0 var(--card-border-radius) var(--card-border-radius) 0;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background: var(--card-background);
+    }
+}
+
+.research-direction-latest-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--card-text-color-tertiary);
+}
+
+.research-direction-latest-text {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: var(--card-text-color-main);
+}
+
+.research-direction-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs) var(--spacing-md);
+    font-size: 1.2rem;
+    color: var(--card-text-color-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.research-progress {
+    width: 100%;
+    height: 4px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--card-separator-color);
+}
+
+.research-progress-bar {
+    display: block;
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.research-direction-notes {
+    font-size: 1.3rem;
+
+    > summary {
+        cursor: pointer;
+        color: var(--accent-color);
+        list-style: none;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::before {
+            content: "▸ ";
+        }
+    }
+
+    &[open] > summary::before {
+        content: "▾ ";
+    }
+
+    > summary:hover {
+        text-decoration: underline;
+    }
+}
+
+.research-direction-empty {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--card-text-color-tertiary);
+}
+
+/* ---------- 状态徽章 ---------- */
+
+.research-badge {
+    flex-shrink: 0;
+    padding: 1px var(--spacing-sm);
+    border-radius: 999px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.6;
+    white-space: nowrap;
+    color: var(--card-text-color-tertiary);
+    background: var(--card-separator-color);
+
+    &.-done {
+        color: var(--research-badge-done);
+        background: rgba(47, 125, 82, 0.12);
+    }
+
+    &.-doing {
+        color: var(--research-badge-doing);
+        background: rgba(var(--accent-color-rgb), 0.12);
+    }
+
+    &.-exploring {
+        color: var(--research-badge-exploring);
+        background: rgba(154, 107, 0, 0.12);
+    }
+
+    &.-paused {
+        color: var(--research-badge-paused);
+        background: rgba(107, 114, 128, 0.14);
+    }
+}
+
+/* ---------- 笔记行 ---------- */
+
+.research-note-list {
+    @include card-style;
+
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+
+    &.-flush {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+    }
+}
+
+.research-note {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--card-padding);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+
+    & + & {
+        border-top: 1px solid var(--card-separator-color);
+    }
+
+    &:hover {
+        background: var(--card-background-selected);
+    }
+}
+
+.research-note-date {
+    font-size: 1.2rem;
+    color: var(--card-text-color-tertiary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.research-note-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.research-note-top {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.research-note-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--card-text-color-main);
+}
+
+.research-note-summary {
+    font-size: 1.3rem;
+    line-height: 1.55;
+    color: var(--card-text-color-secondary);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.research-note-group {
+    font-size: 1.2rem;
+    color: var(--card-text-color-tertiary);
+    white-space: nowrap;
+}
+
+/* ---------- 空状态 ---------- */
+
+.research-empty {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-2xl) var(--card-padding);
+    border: 1px dashed var(--card-separator-color);
+    border-radius: var(--card-border-radius);
+    text-align: center;
+    background: transparent;
+}
+
+.research-empty-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--card-text-color-secondary);
+}
+
+.research-empty-text {
+    margin: 0 auto;
+    max-width: 56ch;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: var(--card-text-color-tertiary);
+
+    code {
+        font-size: 1.2rem;
+        padding: 1px 4px;
+        border-radius: 4px;
+        background: var(--code-background-color);
+        color: var(--code-text-color);
+    }
+}
+
+/* ---------- 窄屏 ---------- */
+
+@include respond(md) {
+    .research-title {
+        font-size: 3.6rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .research-note {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--spacing-xs);
+    }
+
+    .research-note-group {
+        display: none;
+    }
+
+    .research-section-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+}
+
+/* ---------- 暗色 ---------- */
+
+[data-scheme="dark"] .research-dashboard {
+    --research-badge-done: #6fcf97;
+    --research-badge-exploring: #e0b354;
+    --research-badge-paused: #9aa4b2;
+
+    .research-badge {
+        &.-done {
+            background: rgba(111, 207, 151, 0.14);
+        }
+
+        &.-doing {
+            color: #8ab4e8;
+            background: rgba(138, 180, 232, 0.14);
+        }
+
+        &.-exploring {
+            background: rgba(224, 179, 84, 0.14);
+        }
+
+        &.-paused {
+            background: rgba(154, 164, 178, 0.16);
+        }
+    }
+}

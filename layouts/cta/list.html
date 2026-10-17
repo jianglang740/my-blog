@@ -1,0 +1,8 @@
+{{/* CTA 研究仪表盘：正文渲染逻辑与多因子页共用 research/dashboard.html。 */}}
+
+{{ define "body-class" }}research-page{{ end }}
+
+{{ define "main" }}
+    {{ partial "research/dashboard.html" . }}
+    {{ partialCached "footer/footer" . }}
+{{ end }}

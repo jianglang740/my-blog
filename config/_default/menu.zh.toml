@@ -7,6 +7,22 @@
         icon = "home"
 
 [[main]]
+    identifier = "factor"
+    name       = "多因子"
+    pageRef    = "/factor"
+    weight     = 5
+    [main.params]
+        icon = "factor"
+
+[[main]]
+    identifier = "cta"
+    name       = "CTA"
+    pageRef    = "/cta"
+    weight     = 6
+    [main.params]
+        icon = "cta"
+
+[[main]]
     identifier = "archives"
     name       = "所有文章"
     url        = "/archives/"
@@ -26,7 +42,7 @@
     identifier = "freqtrade"
     name       = "Freqtrade 课程"
     pageRef    = "/post/freqtrade"
-    weight     = 5
+    weight     = 7
     [main.params]
         icon = "school"
 
@@ -34,7 +50,7 @@
     identifier = "strategies"
     name       = "Freqtrade策略库"
     pageRef    = "/post/freqtrade-strategies"
-    weight     = 6
+    weight     = 8
     [main.params]
         icon = "chart-candle"
 
@@ -42,7 +58,7 @@
     identifier = "about"
     name       = "关于我"
     url        = "/about/"
-    weight     = 7
+    weight     = 9
     [main.params]
         icon = "user"
 
@@ -58,7 +74,7 @@
     identifier = "search"
     name       = "搜索"
     url        = "/search/"
-    weight     = 8
+    weight     = 10
     [main.params]
         icon = "search"
 

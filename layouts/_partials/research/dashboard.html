@@ -1,0 +1,242 @@
+{{- /* 研究仪表盘（/factor/ 与 /cta/ 共用）
+
+   数据全部来自真实页面，不写死任何数字：
+   - 笔记 = 分区内所有普通页面（.RegularPages，不受分页器影响）
+   - 方向 = _index.zh.md 里 directions 声明的条目
+   - 进行中 / 已完成 = 按笔记 front matter 的 status 过滤
+   - 方向进度 = 该方向「已完成笔记 / 全部笔记」
+   这里不调用分页，也不读 .Paginator。 */ -}}
+
+{{- $page := . -}}
+{{- $notes := sort $page.RegularPages "Lastmod" "desc" -}}
+{{- $directions := $page.Params.directions | default (slice) -}}
+
+{{- $statusLabels := dict
+    "done" "已完成"
+    "in-progress" "进行中"
+    "exploring" "探索中"
+    "paused" "暂停"
+    "active" "进行中"
+    "planned" "规划中"
+-}}
+{{- $statusClasses := dict
+    "done" "-done"
+    "in-progress" "-doing"
+    "exploring" "-exploring"
+    "paused" "-paused"
+    "active" "-doing"
+    "planned" "-exploring"
+-}}
+
+{{/* 校验方向 id，并建立 id -> 名称 映射 */}}
+{{- $directionNames := dict -}}
+{{- $directionIDs := slice -}}
+{{- range $directions -}}
+    {{- $id := .id | default "" -}}
+    {{- if not $id -}}
+        {{- warnf "research: %s 有一个方向没有写 id" $page.RelPermalink -}}
+    {{- else if in $directionIDs $id -}}
+        {{- warnf "research: %s 的方向 id %q 重复" $page.RelPermalink $id -}}
+    {{- else -}}
+        {{- $directionIDs = $directionIDs | append $id -}}
+        {{- $directionNames = merge $directionNames (dict $id (.name | default $id)) -}}
+    {{- end -}}
+{{- end -}}
+
+{{/* 笔记 group 写错时给出构建警告，页面上归入「未归类」 */}}
+{{- range $notes -}}
+    {{- $g := .Params.group | default "" -}}
+    {{- if and $g (not (in $directionIDs $g)) -}}
+        {{- warnf "research: 笔记 %s 的 group %q 不在 %s 的 directions 里（可选：%s）"
+            .RelPermalink $g $page.RelPermalink (delimit $directionIDs ", ") -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $doing := where $notes "Params.status" "in-progress" -}}
+{{- $done := where $notes "Params.status" "done" -}}
+{{- $covered := 0 -}}
+{{- range $directionIDs -}}
+    {{- if gt (len (where $notes "Params.group" .)) 0 -}}
+        {{- $covered = add $covered 1 -}}
+    {{- end -}}
+{{- end -}}
+{{- $latest := "" -}}
+{{- with $notes -}}{{- $latest = (index . 0).Lastmod -}}{{- end -}}
+
+<div class="research-dashboard">
+
+    <header class="research-header">
+        {{ with $page.Params.kicker }}
+            <p class="research-kicker">{{ . }}</p>
+        {{ end }}
+        <h1 class="research-title">{{ $page.Title }}</h1>
+        {{ with $page.Params.description }}
+            <p class="research-description">{{ . }}</p>
+        {{ end }}
+        <div class="research-header-meta">
+            <span>最近更新：{{ if $latest }}{{ $latest | time.Format site.Params.dateFormat.lastUpdated }}{{ else }}暂无{{ end }}</span>
+            <span>方向覆盖：{{ $covered }}/{{ len $directionIDs }}</span>
+            <span>笔记总数：{{ len $notes }}</span>
+        </div>
+    </header>
+
+    {{ with $page.Content }}
+        <div class="research-intro article-content">{{ . }}</div>
+    {{ end }}
+
+    <div class="research-kpis">
+        <div class="research-kpi">
+            <span class="research-kpi-value">{{ len $notes }}</span>
+            <span class="research-kpi-label">研究笔记</span>
+            <span class="research-kpi-hint">全部轻量笔记</span>
+        </div>
+        <div class="research-kpi">
+            <span class="research-kpi-value">{{ len $directionIDs }}</span>
+            <span class="research-kpi-label">研究方向</span>
+            <span class="research-kpi-hint">已声明模块</span>
+        </div>
+        <div class="research-kpi">
+            <span class="research-kpi-value">{{ len $doing }}</span>
+            <span class="research-kpi-label">进行中</span>
+            <span class="research-kpi-hint">正在验证的问题</span>
+        </div>
+        <div class="research-kpi">
+            <span class="research-kpi-value">{{ len $done }}</span>
+            <span class="research-kpi-label">已完成</span>
+            <span class="research-kpi-hint">已有可复用结论</span>
+        </div>
+    </div>
+
+    <section class="research-section" id="directions">
+        <div class="research-section-head">
+            <h2 class="research-section-title">研究方向</h2>
+            <span class="research-section-note">{{ $covered }}/{{ len $directionIDs }} 个方向已有笔记</span>
+        </div>
+
+        {{ if $directionIDs }}
+            <div class="research-directions">
+                {{ range $directions }}
+                    {{ $d := . }}
+                    {{ if $d.id }}
+                        {{ $groupNotes := sort (where $notes "Params.group" $d.id) "Lastmod" "desc" }}
+                        {{ $groupDone := where $groupNotes "Params.status" "done" }}
+                        {{ $total := len $groupNotes }}
+                        {{ $pct := 0 }}
+                        {{ if gt $total 0 }}
+                            {{ $pct = int (math.Round (mul (div (float (len $groupDone)) (float $total)) 100)) }}
+                        {{ end }}
+                        {{ $latestNote := "" }}
+                        {{ with $groupNotes }}{{ $latestNote = index . 0 }}{{ end }}
+                        {{ $dStatus := $d.status | default "planned" }}
+
+                        <article class="research-direction">
+                            <div class="research-direction-head">
+                                <h3 class="research-direction-title">{{ $d.name | default $d.id }}</h3>
+                                <span class="research-badge {{ index $statusClasses $dStatus | default "-unknown" }}">
+                                    {{ index $statusLabels $dStatus | default "规划中" }}
+                                </span>
+                            </div>
+
+                            {{ with $d.question }}
+                                <p class="research-direction-question">{{ . }}</p>
+                            {{ end }}
+                            {{ with $d.summary }}
+                                <p class="research-direction-summary">{{ . }}</p>
+                            {{ end }}
+
+                            {{ with $latestNote }}
+                                <a class="research-direction-latest" href="{{ .RelPermalink }}">
+                                    <span class="research-direction-latest-label">最新结论</span>
+                                    <span class="research-direction-latest-text">{{ .Params.summary | default .Title }}</span>
+                                </a>
+                            {{ end }}
+
+                            <div class="research-direction-stats">
+                                <span>{{ $total }} 篇笔记</span>
+                                <span>{{ len $groupDone }} 篇已完成</span>
+                                <span>
+                                    {{ with $groupNotes }}
+                                        {{ (index . 0).Lastmod | time.Format site.Params.dateFormat.lastUpdated }}
+                                    {{ else }}
+                                        暂无更新
+                                    {{ end }}
+                                </span>
+                            </div>
+
+                            <div class="research-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                aria-valuenow="{{ $pct }}" aria-label="{{ $d.name }} 已完成笔记占比">
+                                <span class="research-progress-bar" style="width: {{ $pct }}%"></span>
+                            </div>
+
+                            {{ with $groupNotes }}
+                                <details class="research-direction-notes">
+                                    <summary>查看该方向 {{ len . }} 篇笔记</summary>
+                                    <div class="research-note-list -flush">
+                                        {{ range . }}
+                                            {{ partial "research/note-row.html" (dict "Note" . "DirectionName" "") }}
+                                        {{ end }}
+                                    </div>
+                                </details>
+                            {{ else }}
+                                <p class="research-direction-empty">该方向还没有笔记。</p>
+                            {{ end }}
+                        </article>
+                    {{ end }}
+                {{ end }}
+            </div>
+        {{ else }}
+            <div class="research-empty">
+                <p class="research-empty-title">还没有声明研究方向</p>
+                <p class="research-empty-text">在 <code>_index.zh.md</code> 的 <code>directions</code> 里添加方向后再开始写笔记。</p>
+            </div>
+        {{ end }}
+    </section>
+
+    <section class="research-section">
+        <div class="research-section-head">
+            <h2 class="research-section-title">最近更新</h2>
+            {{ with $notes }}
+                <a class="research-section-link" href="#directions">按方向查看</a>
+            {{ end }}
+        </div>
+
+        {{ with $notes }}
+            <div class="research-note-list">
+                {{ range first 6 . }}
+                    {{ $directionName := index $directionNames (.Params.group | default "") | default "未归类" }}
+                    {{ partial "research/note-row.html" (dict "Note" . "DirectionName" $directionName) }}
+                {{ end }}
+            </div>
+        {{ else }}
+            <div class="research-empty">
+                <p class="research-empty-title">还没有研究笔记</p>
+                <p class="research-empty-text">
+                    {{ $page.Params.emptyMessage | default "先把研究问题写下来，再逐步补上结论。" }}
+                </p>
+            </div>
+        {{ end }}
+    </section>
+
+    {{ with $page.Params.relatedSection }}
+        {{ $relatedSection := site.GetPage . }}
+        {{ with $relatedSection }}
+            {{ $related := first 4 (sort .RegularPages "Lastmod" "desc") }}
+            {{ with $related }}
+                <section class="research-section">
+                    <div class="research-section-head">
+                        <h2 class="research-section-title">{{ $page.Params.relatedTitle | default "相关长文" }}</h2>
+                        <a class="research-section-link" href="{{ $relatedSection.RelPermalink }}">查看全部</a>
+                    </div>
+                    <div class="article-list--compact">
+                        {{ range . }}
+                            {{ partial "article-list/compact" . }}
+                        {{ end }}
+                    </div>
+                </section>
+            {{ end }}
+        {{ else }}
+            {{ warnf "research: %s 的 relatedSection %q 找不到对应分区" $page.RelPermalink $page.Params.relatedSection }}
+        {{ end }}
+    {{ end }}
+
+</div>

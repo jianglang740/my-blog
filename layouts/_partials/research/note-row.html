@@ -1,0 +1,42 @@
+{{- /* 单条研究笔记：日期 / 标题 / 状态徽章 / 一句话结论 / 所属方向
+       参数：Note（页面）、DirectionName（可选，方向名） */ -}}
+{{- $note := .Note -}}
+{{- $status := $note.Params.status | default "" -}}
+{{- $labels := dict
+    "done" "已完成"
+    "in-progress" "进行中"
+    "exploring" "探索中"
+    "paused" "暂停"
+-}}
+{{- $classes := dict
+    "done" "-done"
+    "in-progress" "-doing"
+    "exploring" "-exploring"
+    "paused" "-paused"
+-}}
+{{- $date := $note.Lastmod -}}
+{{- if $date.IsZero }}{{ $date = $note.Date }}{{ end -}}
+{{- $summary := $note.Params.summary | default "" -}}
+{{- if not $summary -}}
+    {{- $summary = $note.Summary | plainify | truncate 90 "" -}}
+{{- end -}}
+
+<a class="research-note" href="{{ $note.RelPermalink }}">
+    <time class="research-note-date" datetime="{{ $date.Format "2006-01-02" }}">
+        {{ $date | time.Format site.Params.dateFormat.lastUpdated }}
+    </time>
+    <span class="research-note-body">
+        <span class="research-note-top">
+            <span class="research-note-title">{{ $note.Title }}</span>
+            <span class="research-badge {{ index $classes $status | default "-unknown" }}">
+                {{ index $labels $status | default "未标注" }}
+            </span>
+        </span>
+        {{ with $summary }}
+            <span class="research-note-summary">{{ . }}</span>
+        {{ end }}
+    </span>
+    {{ with .DirectionName }}
+        <span class="research-note-group">{{ . }}</span>
+    {{ end }}
+</a>

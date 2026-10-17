@@ -1,0 +1,26 @@
+{{- /* 搜索索引：主题同名文件的覆盖版。
+       在 post 之外把研究分区（factor / cta）的笔记也纳入，不动 mainSections，
+       所以 /blog/、归档和主 RSS 仍然只收 post。 */ -}}
+
+{{- $sections := slice "post" "factor" "cta" -}}
+{{- $pages := where .Site.RegularPages "Section" "in" $sections -}}
+{{- $pages = sort $pages "Lastmod" "desc" -}}
+{{- $result := slice -}}
+
+{{- range $pages -}}
+    {{- $content := .Plain -}}
+    {{- with .Params.summary -}}
+        {{- $content = printf "%s %s" . $content -}}
+    {{- end -}}
+
+    {{- $data := dict "title" .Title "date" .Date "permalink" .RelPermalink "content" $content -}}
+
+    {{- $image := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) -}}
+    {{- if $image -}}
+        {{- $data = merge $data (dict "image" $image.Permalink) -}}
+    {{- end -}}
+
+    {{- $result = $result | append $data -}}
+{{- end -}}
+
+{{ jsonify $result }}

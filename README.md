@@ -1,76 +1,110 @@
 # 量化投资与机器学习个人技术博客
 
-这是我的个人技术博客项目，主要用来记录我在量化投资、机器学习、数学统计和 Python 技术栈方向上的学习、复现与实践。
+这是我的个人技术博客：记录量化投资、机器学习、数学统计与 Python 工程化方向的学习、复现和实践。
 
-博客不是一个成熟的投研平台，也不提供任何投资建议。它更像是一份持续更新的学习档案：把我读过的理论、复现过的研报、写过的代码、踩过的坑和阶段性理解沉淀下来，方便自己复盘，也希望能给同样在入门量化与机器学习的朋友一些参考。
+线上地址：<https://jianglang740.github.io/my-blog/>
 
-## 博客内容
+博客不是成熟的投研平台，也不提供任何投资建议。它更像一份持续更新的学习档案——把读过的理论、复现过的研报、写过的代码和踩过的坑沉淀下来，方便自己复盘，也希望能给同样在入门量化与机器学习的朋友一些参考。
 
-目前内容主要围绕以下几个方向展开：
+## 内容版图
 
-| 方向 | 内容 |
+截至 2026 年 10 月，`content/post/` 下共有 70 篇长文，另有多因子、CTA 两个研究分区。
+
+| 板块 | 路径 | 内容 |
+| --- | --- | --- |
+| Freqtrade 课程 | `/post/freqtrade/` | 30 课 36 篇，从环境搭建、回测、参数优化到实盘交易 |
+| Freqtrade 策略库 | `/post/freqtrade-strategies/` | 21 个策略：12 个自研、5 个第三方精选、4 个故意保留未来函数的反面教材 |
+| 华泰多因子研报复现 | `/post/华泰证券多因子系列研报复现项目/` | 4 篇，从因子体系理论、架构设计到数据预处理与策略实现 |
+| 技术栈 | `/post/技术栈/` | 7 篇，BackTrader、CCXT、Streamlit、MySQL、项目结构等工具实践 |
+| 数学教程 / 机器学习 | `/post/数学教程/`、`/post/机器学习/` | 统计量的矩视角、线性回归等基础内容 |
+| 多因子研究 | `/factor/` | 研究方向仪表盘 + 轻量笔记 |
+| CTA 研究 | `/cta/` | 研究方向仪表盘 + 轻量笔记 |
+| 项目 | `/projects/` | 4 个项目展示页 |
+
+多因子和 CTA 不是简单的分类页，而是两套**研究仪表盘**：按研究方向组织笔记，展示每个方向的当前问题、最新结论、笔记数量与完成进度；笔记按 `group` 自动归类，数字全部由 Hugo 在构建时从页面计算，不写死。
+
+- 多因子方向：已有因子、数据与预处理、因子构建与检验、收益预测与组合、回测与归因、研究工程化
+- CTA 方向：宏观研究、趋势跟踪、截面动量、波动率与风险、组合与资金管理、执行与监控
+
+## 站点功能
+
+- **首页统计仪表盘**（`/`）：总文章数、总码字量、运行天数、分类分布、热门标签、年度贡献热力图、周/时段发布活跃度
+- **文章列表**（`/blog/`）：卡片式文章流，按发布时间倒序分页
+- **研究仪表盘**（`/factor/`、`/cta/`）：研究方向面板、KPI 统计、最近更新、相关长文
+- **独立笔记分区**：研究笔记存放在 `content/factor/`、`content/cta/`，不进入 `/blog/`、归档和主 RSS，但已纳入站内搜索
+- **站内搜索**（`/search/`）：索引覆盖 `post`、`factor`、`cta` 三个分区
+- **Freqtrade 课程与策略库**：课程章节与策略页各自有独立入口和目录
+- 深浅色主题切换、Waline 评论、全文 RSS、KaTeX 数学公式（页面 front matter 中 `math: true` 开启）
+
+## 技术栈
+
+| 组件 | 说明 |
 | --- | --- |
-| Quant | 多因子模型、金融时间序列、策略回测、量化研报复现 |
-| Machine Learning | 机器学习基础算法、模型原理、公式推导与代码实现 |
-| Math | 统计量、矩、计量基础、数学概念的直观理解 |
-| Tech Stack | Python 工程化、数据库、Streamlit、BackTrader、CCXT 等工具 |
-| Tutorial | 面向初学者的教程、速查表和实践笔记 |
+| [Hugo](https://gohugo.io/) Extended | 静态站点生成，本地开发使用 0.161.1 |
+| [Hugo Theme Stack v4](https://github.com/CaiJimmy/hugo-theme-stack) | v4.0.0-beta.15，以 Hugo Module 方式引入 |
+| Go | 1.25，用于管理主题模块 |
+| Dart Sass | 编译主题与自定义 SCSS |
+| GitHub Actions + GitHub Pages | 自动构建、部署与托管 |
+| Waline | 评论与阅读量统计 |
 
-## 已整理文章
+项目没有前端框架，也没有单独的前端构建流程：Hugo 负责渲染页面、编译 SCSS 和打包资源，产物是纯静态文件。
 
-### 量化投资与研报复现
+## 目录结构
 
-- 华泰多因子系列研报复现之一：初探多因子模型之理论概论（上）
-- 华泰多因子系列研报之一：明确华泰多因子体系架构（中）
-- 金融时间序列分析——数据预处理
-- 动量 + 均线多头策略回测及基于 Streamlit 的交互式 Web 页面构建
-
-### 机器学习与数学基础
-
-- 机器学习系列算法之线性回归
-- 从“矩”的角度来理解计量中的统计量
-
-### 技术栈与工具实践
-
-- 经典量化框架之 BackTrader
-- 加密市场量化框架之 CCXT
-- Streamlit API 速查
-- 21 分钟 MySQL 数据库基础入门
-- 如何用 PyMySQL 操作 MySQL 数据库
-- 模块化的多文件夹结构的项目管理和操作方法
-
-## 写作风格
-
-我会尽量从初学者视角出发，把问题拆成“为什么需要它、它解决什么问题、核心原理是什么、如何用代码实现”这几部分。
-
-相比只罗列结论，我更希望记录完整的学习路径：包括公式背后的直觉、代码实现时容易忽略的细节、工具之间的差异，以及把理论落到项目中的过程。文章中难免会有不成熟之处，欢迎批评交流。
-
-## 项目技术栈
-
-这个博客基于 Hugo 搭建，并在 Stack 主题基础上做了个性化调整。
-
-主要包含：
-
-- Hugo 静态站点生成
-- Hugo Stack 主题
-- GitHub Actions 自动构建与部署
-- GitHub Pages 托管
-- 自定义首页网格、代码块样式、移动端导航、统计页与 Footer
-- Waline 评论与阅读量统计集成
+```text
+.
+├── archetypes/                  # 内容模板：研究笔记、因子条目等
+├── assets/
+│   ├── icons/                   # 侧边栏与自定义图标
+│   ├── img/                     # 头像、favicon
+│   └── scss/                    # 主题变量覆盖与自定义组件样式
+├── config/_default/             # 站点、语言、菜单、主题参数
+├── content/
+│   ├── post/                    # 长文：freqtrade、策略库、华泰研报、技术栈、数学、机器学习
+│   ├── factor/                  # 多因子研究方向与轻量笔记
+│   ├── cta/                     # CTA 研究方向与轻量笔记
+│   ├── projects/                # 项目展示
+│   ├── blog/                    # /blog/ 文章列表页
+│   ├── about/                   # 关于我
+│   ├── archives/                # 归档
+│   ├── search/                  # 搜索页
+│   ├── stats/                   # 统计页
+│   └── categories/              # 分类页
+├── layouts/
+│   ├── _partials/               # 统计仪表盘、研究仪表盘、侧边栏、页脚等
+│   ├── _default/stats.html      # 统计页入口
+│   ├── home.html                # 根路径 → 统计仪表盘
+│   ├── blog/list.html           # /blog/ 文章列表
+│   ├── factor/list.html         # 多因子仪表盘
+│   ├── cta/list.html            # CTA 仪表盘
+│   ├── post/                    # 课程与策略库的章节/列表布局
+│   ├── projects/list.html       # 项目列表
+│   ├── page/search.json         # 搜索索引（含研究笔记）
+│   └── shortcodes/              # title、timeline 等自定义 shortcode
+├── i18n/zh.toml                 # 中文文案
+├── static/                      # 静态资源
+├── .github/workflows/deploy.yml # GitHub Pages 自动部署
+└── 使用说明.md                  # 维护手册：路由规则、内容管理、排错
+```
 
 ## 本地运行
 
-需要安装 Hugo Extended 版本。
+需要安装：
+
+- Hugo Extended（本地实测 0.161.1）
+- Go 1.25 及以上（Hugo Module 需要）
+- Dart Sass
+
+克隆并启动：
 
 ```bash
+git clone https://github.com/jianglang740/my-blog.git
+cd my-blog
+hugo mod download
 hugo server
 ```
 
-本地预览地址通常是：
-
-```text
-http://localhost:1313
-```
+预览地址：<http://localhost:1313/>
 
 构建静态文件：
 
@@ -78,41 +112,48 @@ http://localhost:1313
 hugo --gc --minify
 ```
 
-## 目录结构
+产物在 `public/`，该目录已在 `.gitignore` 中，不需要提交。
 
-```text
-.
-├── assets/                 # 自定义样式、图标和图片资源
-├── config/_default/        # Hugo 与主题配置
-├── content/                # 文章、分类、归档、搜索和统计页
-│   ├── post/               # 博客文章
-│   ├── categories/         # 分类页
-│   ├── archives/           # 归档页
-│   ├── search/             # 搜索页
-│   └── stats/              # 统计页
-├── layouts/                # 自定义页面、组件和 shortcode
-├── static/                 # 静态资源
-├── i18n/                   # 中文翻译配置
-└── .github/workflows/      # GitHub Pages 自动部署流程
+## 写作与内容维护
+
+### 普通长文
+
+```bash
+hugo new content post/技术栈/新文章.md
 ```
 
-## 部署说明
+### 研究笔记
 
-项目通过 GitHub Actions 自动部署到 GitHub Pages。
+多因子与 CTA 的笔记使用独立模板，front matter 需要填写归属方向和状态：
 
-主要配置位置：
+```bash
+hugo new content factor/因子去极值.md
+hugo new content cta/我国期货市场现状.md
 
-- `config/_default/config.toml`：站点地址、语言、标题
-- `config/_default/params.toml`：首页、评论、Footer、主题参数
-- `config/_default/params.zh.toml`：中文侧边栏、头像、个人简介等配置
-- `.github/workflows/deploy.yml`：自动构建与部署流程
+# 写「已有因子」条目时，用带固定正文骨架的模板
+hugo new content --kind factor-library factor/momentum-12-1.md
+```
 
-如果迁移到新的仓库，需要重点检查：
+| 字段 | 说明 |
+| --- | --- |
+| `group` | 归属方向 id，必须与 `_index.zh.md` 中 `directions[].id` 一致 |
+| `status` | `exploring` / `in-progress` / `done` / `paused` |
+| `summary` | 一句话结论，直接显示在仪表盘上 |
 
-1. `baseurl` 是否与 GitHub Pages 地址一致
-2. GitHub Pages 是否启用 GitHub Actions 作为部署来源
-3. Waline 评论服务地址是否已替换为自己的服务
-4. Hugo Extended 版本是否满足主题要求
+研究方向本身在 `content/factor/_index.zh.md`、`content/cta/_index.zh.md` 的 `directions` 里增删改。`group` 写错时构建会给出警告，页面上归入「未归类」。
+
+更多细节（URL 规则、索引机制、常见问题）见 [使用说明.md](使用说明.md)。
+
+## 部署
+
+推送到 `main` 分支后，GitHub Actions 会自动安装 Hugo、Go 和 Dart Sass，执行 `hugo --gc --minify`，再把 `public/` 发布到 GitHub Pages。流程见 [.github/workflows/deploy.yml](.github/workflows/deploy.yml)。
+
+迁移到新仓库时需要检查：
+
+1. `config/_default/config.toml` 的 `baseurl` 是否与 GitHub Pages 地址一致
+2. 仓库 Pages 的部署来源是否设为 GitHub Actions
+3. `config/_default/params.toml` 中的 Waline `serverURL` 是否已替换为自己的服务
+4. CI 安装的是最新版 Hugo Extended，与本地版本可能存在差异，升级主题后需要留意构建结果
 
 ## 关于我
 
@@ -120,6 +161,8 @@ hugo --gc --minify
 
 这个博客会持续记录我的学习见解、项目复现和实践总结。如果文章能帮到你，欢迎交流；如果有错误，也欢迎指出。
 
-## 免责声明
+## 免责声明与许可
 
 博客中涉及的量化策略、金融数据分析和回测内容仅用于学习与研究，不构成任何投资建议。市场有风险，投资需谨慎。
+
+文章内容采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可协议；仓库代码遵循根目录 [LICENSE](LICENSE)（GPL-3.0）中的条款。

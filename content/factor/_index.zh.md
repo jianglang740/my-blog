@@ -1,0 +1,43 @@
+---
+title: "多因子研究"
+description: "从数据底座、已有因子、因子构建到组合回测的多因子研究框架、进度与笔记"
+kicker: "RESEARCH / FACTOR"
+emptyMessage: "多因子研究区已建好：先把研究问题和框架放上来，笔记会随研究推进逐步补齐。"
+relatedSection: "/post/华泰证券多因子系列研报复现项目"
+relatedTitle: "相关长文：华泰多因子研报复现"
+directions:
+  - id: "library"
+    name: "已有因子"
+    question: "已复现或自创的因子，构造依据与实际表现如何？"
+    summary: "逐个记录因子的构造方法、经济学原理、绩效表现与适用边界。"
+    status: "active"
+  - id: "data"
+    name: "数据与预处理"
+    question: "如何得到干净、可比、无未来函数的因子面板？"
+    summary: "行情清洗、复权、停牌与涨跌停处理、行业与市值中性化。"
+    status: "active"
+  - id: "construction"
+    name: "因子构建与检验"
+    question: "哪些候选因子值得进入模型？"
+    summary: "动量、反转、波动、流动性、质量等因子的定义，以及 IC / RankIC 与分层回测。"
+    status: "active"
+  - id: "model"
+    name: "收益预测与组合"
+    question: "如何把因子暴露转成可交易的组合？"
+    summary: "多因子合成、回归与机器学习方法、权重约束与风险模型。"
+    status: "planned"
+  - id: "backtest"
+    name: "回测与归因"
+    question: "策略收益来自哪里，是否稳健？"
+    summary: "样本内外检验、交易成本、换手率，以及行业与风格归因。"
+    status: "planned"
+  - id: "engineering"
+    name: "研究工程化"
+    question: "如何让研究可复现、可持续迭代？"
+    summary: "数据管道、实验记录、报告自动化，以及用 Streamlit 做交互式展示。"
+    status: "active"
+---
+
+这里记录我对多因子模型的研究路径：从数据预处理、因子构建，到组合回测与归因。已复现和自创的因子会逐个归档在「已有因子」里，写清构造方法与经济学依据。
+
+页面上的数字全部由笔记页面自动统计，**方向状态只表示当前研究阶段，不代表任何收益或绩效指标**。

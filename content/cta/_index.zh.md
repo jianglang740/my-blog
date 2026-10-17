@@ -1,0 +1,43 @@
+---
+title: "CTA 研究"
+description: "商品交易顾问 / 管理期货方向的研究框架、交易逻辑与风控笔记"
+kicker: "RESEARCH / CTA"
+emptyMessage: "CTA 研究区已建好：先把研究问题和框架放上来，笔记会随研究推进逐步补齐。"
+relatedSection: "/post/freqtrade-strategies"
+relatedTitle: "相关长文：趋势与动量策略实现"
+directions:
+  - id: "macro"
+    name: "宏观研究"
+    question: "CTA 的收益来自哪里，又受哪些市场环境影响？"
+    summary: "我国及主要国家的期货市场现状与交易规则、CTA 的定义与策略谱系、商品周期性与品种间相关性。"
+    status: "planned"
+  - id: "trend"
+    name: "趋势跟踪"
+    question: "如何识别并跟随可持续的趋势？"
+    summary: "均线、突破、ADX/DI、波动率过滤与持有期设计。"
+    status: "active"
+  - id: "cross-sectional"
+    name: "截面动量"
+    question: "商品期货的截面动量是否稳定？"
+    summary: "多品种截面排序、持有期、换手率与拥挤度。"
+    status: "planned"
+  - id: "volatility"
+    name: "波动率与风险"
+    question: "如何控制回撤与尾部风险？"
+    summary: "波动率目标、止损、仓位上限与压力测试。"
+    status: "planned"
+  - id: "portfolio"
+    name: "组合与资金管理"
+    question: "多策略、多品种之间如何分配风险？"
+    summary: "风险平价、相关性、保证金管理与杠杆约束。"
+    status: "planned"
+  - id: "execution"
+    name: "执行与监控"
+    question: "实盘执行偏差如何度量？"
+    summary: "滑点、交易成本、信号监控与异常处理。"
+    status: "planned"
+---
+
+这里记录 CTA / 管理期货方向的研究笔记。基础层面先做宏观研究：厘清 CTA 的定义与策略谱系、中外期货市场现状与交易规则，以及商品的周期性与品种相关性；策略层面重点是趋势与动量逻辑的工程化验证，后续再补组合与风控层。
+
+页面上的数字全部由笔记页面自动统计，**方向状态只表示当前研究阶段，不代表任何收益或绩效指标**。
