@@ -1,0 +1,20 @@
+{{/* /blog/：原首页的文章卡片列表。
+     统计面板搬到根路径后，这里接管「看所有文章」的入口，布局与旧首页完全一致。
+     集合来源见 layouts/_partials/helper/pages.html 里 blog 分支的说明。 */}}
+
+{{ define "main" }}
+    {{- $paginator := partial "helper/paginator.html" . -}}
+
+    <section class="article-list{{ if site.Params.homepage.grid }} -grid{{ end }}">
+        {{ range $index, $element := $paginator.Pages }}
+            {{ partial "article-list/default" . }}
+        {{ end }}
+    </section>
+
+    {{- partial "pagination.html" . -}}
+    {{ partialCached "footer/footer" . }}
+{{ end }}
+
+{{ define "right-sidebar" }}
+    {{ partial "sidebar/right.html" (dict "Context" . "Scope" "homepage") }}
+{{ end }}

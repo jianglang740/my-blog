@@ -1,7 +1,7 @@
 [[main]]
     identifier = "home"
-    name       = "首页"
-    url        = "/"
+    name       = "文章"
+    url        = "/blog/"
     weight     = 2
     [main.params]
         icon = "home"
@@ -32,7 +32,7 @@
 
 [[main]]
     identifier = "strategies"
-    name       = "策略库"
+    name       = "Freqtrade策略库"
     pageRef    = "/post/freqtrade-strategies"
     weight     = 6
     [main.params]
@@ -49,7 +49,7 @@
 [[main]]
     identifier = "stats"
     name       = "统计"
-    url        = "/stats/"
+    url        = "/"
     weight     = 1
     [main.params]
         icon = "analytics"

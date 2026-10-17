@@ -1,0 +1,25 @@
+{{/* 主题同名 partial 的副本，只多一个分支：/blog/ 分区。
+
+   为什么需要覆盖：主题的 head.html 会先调 data/title.html，它转调 helper/paginator.html，
+   在那里用本函数的结果**第一次**初始化分页器。而 /blog/ 是个没有子页面的 section，
+   默认只会拿到空集合——分页器一旦按空集合初始化，list 模板里再 .Paginate 什么都不管用了。
+   所以这里必须让 /blog/ 与 layouts/blog/list.html 使用同一个集合。 */}}
+
+{{- $pages := .Pages -}}
+
+{{- if .IsHome -}}
+    {{- $pages = where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+{{- else if and (eq .Kind "section") (eq .Section "blog") -}}
+    {{- $pages = where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+{{- else if or (eq .Kind "section") (eq .Kind "taxonomy") (eq .Kind "term") -}}
+    {{- $subsections := .Sections -}}
+    {{- $pages = .Pages | complement $subsections -}}
+
+    {{- if eq (len $pages) 0 -}}
+        {{- $pages = $subsections -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $pages := partial "helper/pages-sort.html" (dict "Pages" $pages "Context" .) -}}
+
+{{- return $pages -}}

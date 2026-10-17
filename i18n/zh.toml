@@ -72,6 +72,7 @@ darkMode   = "暗色模式"
         text  = "这些 Cookie 启用评论和嵌入内容等功能."
 
 [stats]
+    title               = "统计"
     subtitle            = "记录创作点滴"
     posts               = "篇总文章"
     words               = "总码字量"

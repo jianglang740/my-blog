@@ -1,16 +1,6 @@
+{{/* 根路径落地页 = 统计面板，让第一次打开网址的人先看到创作数据。
+     原来的文章卡片列表没有删，搬到了 /blog/（见 layouts/blog/list.html）。 */}}
+
 {{ define "main" }}
-    {{- $paginator := partial "helper/paginator.html" . -}}
-
-    <section class="article-list{{ if .Site.Params.homepage.grid }} -grid{{ end }}">
-        {{ range $index, $element := $paginator.Pages }}
-            {{ partial "article-list/default" . }}
-        {{ end }}
-    </section>
-
-    {{- partial "pagination.html" . -}}
-    {{- partial "footer/footer" . -}}
-{{ end }}
-
-{{ define "right-sidebar" }}
-    {{ partial "sidebar/right.html" (dict "Context" . "Scope" "homepage") }}
+    {{ partial "stats/dashboard.html" . }}
 {{ end }}
