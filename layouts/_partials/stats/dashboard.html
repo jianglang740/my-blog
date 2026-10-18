@@ -1,7 +1,7 @@
 {{- $page := . -}}
 {{- $allPosts := slice -}}
 {{- range .Sites -}}
-{{- $allPosts = $allPosts | append (where .RegularPages "Section" "post") -}}
+{{- $allPosts = $allPosts | append (where .RegularPages "Section" "in" (slice "post" "factor" "cta")) -}}
 {{- end -}}
 {{- $bookCount := len (where .Site.RegularPages "Section" "books") -}}
 
