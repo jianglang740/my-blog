@@ -1,0 +1,50 @@
+{{- /* 书架上的一本书：封面、作者、简介与 PDF 操作。
+       参数：书目页面（page bundle） */ -}}
+{{- $book := . -}}
+{{- $pdfName := $book.Params.pdf | default "book.pdf" -}}
+{{- $pdf := $book.Resources.GetMatch $pdfName -}}
+{{- if not $pdf -}}
+    {{- warnf "books: %s 找不到 PDF 资源 %q（把文件放进书目目录，或在 front matter 里改 pdf 字段）" $book.RelPermalink $pdfName -}}
+{{- end -}}
+{{- $cover := $book.Resources.GetMatch ($book.Params.cover | default "cover.*") -}}
+{{- if not $cover -}}
+    {{- range first 1 ($book.Resources.ByType "image") -}}
+        {{- $cover = . -}}
+    {{- end -}}
+{{- end -}}
+{{- $summary := $book.Params.summary | default ($book.Summary | plainify | truncate 100 "") -}}
+
+<article class="book-card">
+    <a class="book-card-cover" href="{{ $book.RelPermalink }}" aria-label="{{ $book.Title }}">
+        {{ with $cover }}
+            <img src="{{ .RelPermalink }}" alt="{{ $book.Title }} 封面" loading="lazy">
+        {{ else }}
+            <span class="book-card-cover-title">{{ $book.Title }}</span>
+        {{ end }}
+    </a>
+
+    <div class="book-card-body">
+        <h2 class="book-card-title"><a href="{{ $book.RelPermalink }}">{{ $book.Title }}</a></h2>
+
+        {{ with $book.Params.author }}
+            <p class="book-card-author">{{ if reflect.IsSlice . }}{{ delimit . " / " }}{{ else }}{{ . }}{{ end }}</p>
+        {{ end }}
+
+        {{ with $summary }}
+            <p class="book-card-summary">{{ . }}</p>
+        {{ end }}
+
+        <div class="book-card-meta">
+            {{ with $book.Params.publishYear }}<span>{{ . }}</span>{{ end }}
+            {{ with $book.Params.language }}<span>{{ . }}</span>{{ end }}
+        </div>
+
+        <div class="book-card-actions">
+            {{ with $pdf }}
+                <a class="book-action -primary" href="{{ .RelPermalink }}" target="_blank" rel="noopener">在线阅读</a>
+                <a class="book-action" href="{{ .RelPermalink }}" download>下载</a>
+            {{ end }}
+            <a class="book-action" href="{{ $book.RelPermalink }}">详情</a>
+        </div>
+    </div>
+</article>

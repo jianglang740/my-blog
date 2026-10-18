@@ -1,0 +1,44 @@
+{{/* 书籍页：按书目目录渲染卡片，书目数量与文件大小均来自真实资源。 */}}
+
+{{ define "body-class" }}books-page{{ end }}
+
+{{ define "main" }}
+    {{- $books := .RegularPages -}}
+
+    <div class="books-dashboard">
+        <header class="books-header">
+            {{ with .Params.kicker }}
+                <p class="books-kicker">{{ . }}</p>
+            {{ end }}
+            <h1 class="books-title">{{ .Title }}</h1>
+            {{ with .Params.description }}
+                <p class="books-description">{{ . }}</p>
+            {{ end }}
+            <div class="books-meta">
+                <span>共 {{ len $books }} 本书</span>
+                {{ with $books }}
+                    <span>最近更新：{{ (index (sort . "Lastmod" "desc") 0).Lastmod | time.Format site.Params.dateFormat.lastUpdated }}</span>
+                {{ end }}
+            </div>
+        </header>
+
+        {{ with .Content }}
+            <div class="books-intro article-content">{{ . }}</div>
+        {{ end }}
+
+        {{ with $books }}
+            <div class="books-grid">
+                {{ range . }}
+                    {{ partial "books/card.html" . }}
+                {{ end }}
+            </div>
+        {{ else }}
+            <div class="books-empty">
+                <p class="books-empty-title">书架还空着</p>
+                <p class="books-empty-text">{{ .Params.emptyMessage | default "书籍整理中，后续会陆续补充。" }}</p>
+            </div>
+        {{ end }}
+    </div>
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}

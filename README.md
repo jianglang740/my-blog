@@ -20,6 +20,7 @@
 | 多因子研究 | `/factor/` | 研究方向仪表盘 + 轻量笔记 |
 | CTA 研究 | `/cta/` | 研究方向仪表盘 + 轻量笔记 |
 | 项目 | `/projects/` | 4 个项目展示页 |
+| 书籍 | `/books/` | 书架：封面、简介与 PDF 在线阅读/下载 |
 
 多因子和 CTA 不是简单的分类页，而是两套**研究仪表盘**：按研究方向组织笔记，展示每个方向的当前问题、最新结论、笔记数量与完成进度；笔记按 `group` 自动归类，数字全部由 Hugo 在构建时从页面计算，不写死。
 
@@ -32,7 +33,8 @@
 - **文章列表**（`/blog/`）：卡片式文章流，按发布时间倒序分页
 - **研究仪表盘**（`/factor/`、`/cta/`）：研究方向面板、KPI 统计、最近更新、相关长文
 - **独立笔记分区**：研究笔记存放在 `content/factor/`、`content/cta/`，不进入 `/blog/`、归档和主 RSS，但已纳入站内搜索
-- **站内搜索**（`/search/`）：索引覆盖 `post`、`factor`、`cta` 三个分区
+- **书籍页**（`/books/`）：书籍卡片、封面上传、PDF 在线预览与下载
+- **站内搜索**（`/search/`）：索引覆盖 `post`、`factor`、`cta`、`books` 四个分区
 - **Freqtrade 课程与策略库**：课程章节与策略页各自有独立入口和目录
 - 深浅色主题切换、Waline 评论、全文 RSS、KaTeX 数学公式（页面 front matter 中 `math: true` 开启）
 
@@ -63,6 +65,7 @@
 │   ├── post/                    # 长文：freqtrade、策略库、华泰研报、技术栈、数学、机器学习
 │   ├── factor/                  # 多因子研究方向与轻量笔记
 │   ├── cta/                     # CTA 研究方向与轻量笔记
+│   ├── books/                   # 书籍 page bundle（index.md + 封面 + PDF）
 │   ├── projects/                # 项目展示
 │   ├── blog/                    # /blog/ 文章列表页
 │   ├── about/                   # 关于我
@@ -77,6 +80,7 @@
 │   ├── blog/list.html           # /blog/ 文章列表
 │   ├── factor/list.html         # 多因子仪表盘
 │   ├── cta/list.html            # CTA 仪表盘
+│   ├── books/                   # 书架与单本书目布局
 │   ├── post/                    # 课程与策略库的章节/列表布局
 │   ├── projects/list.html       # 项目列表
 │   ├── page/search.json         # 搜索索引（含研究笔记）
@@ -141,6 +145,25 @@ hugo new content --kind factor-library factor/momentum-12-1.md
 | `summary` | 一句话结论，直接显示在仪表盘上 |
 
 研究方向本身在 `content/factor/_index.zh.md`、`content/cta/_index.zh.md` 的 `directions` 里增删改。`group` 写错时构建会给出警告，页面上归入「未归类」。
+
+### 书籍
+
+书籍使用 page bundle，一本书一个目录：
+
+```text
+content/books/书名/
+├── index.md      # 书名、作者、简介
+├── cover.jpg     # 封面，可选；缺省时显示书名占位
+└── book.pdf      # 正文 PDF
+```
+
+```bash
+hugo new content books/书名/index.md
+```
+
+`author`、`publishYear`、`publisher`、`language`、`summary`、`tags` 会显示在书架和书目页；`cover`、`pdf` 默认指向 `cover.jpg`、`book.pdf`，文件名不同时改这两个字段即可。
+
+PDF 按静态文件原样发布，Hugo 不会索引其内部文字，所以书名和简介要写在 `index.md` 里才能被站内搜索到。GitHub Pages 的站点上限约 1GB、单文件上限 100MB，单本建议控制在 80MB 以内。
 
 更多细节（URL 规则、索引机制、常见问题）见 [使用说明.md](使用说明.md)。
 

@@ -2,7 +2,7 @@
        在 post 之外把研究分区（factor / cta）的笔记也纳入，不动 mainSections，
        所以 /blog/、归档和主 RSS 仍然只收 post。 */ -}}
 
-{{- $sections := slice "post" "factor" "cta" -}}
+{{- $sections := slice "post" "factor" "cta" "books" -}}
 {{- $pages := where .Site.RegularPages "Section" "in" $sections -}}
 {{- $pages = sort $pages "Lastmod" "desc" -}}
 {{- $result := slice -}}
@@ -10,6 +10,9 @@
 {{- range $pages -}}
     {{- $content := .Plain -}}
     {{- with .Params.summary -}}
+        {{- $content = printf "%s %s" . $content -}}
+    {{- end -}}
+    {{- with .Params.author -}}
         {{- $content = printf "%s %s" . $content -}}
     {{- end -}}
 

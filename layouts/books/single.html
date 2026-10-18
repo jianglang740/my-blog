@@ -1,0 +1,81 @@
+{{/* 单本书目：封面 + 元信息 + 简介 + PDF 在线阅读。 */}}
+
+{{ define "body-class" }}book-page{{ end }}
+
+{{ define "main" }}
+    {{- $book := . -}}
+    {{- $pdfName := $book.Params.pdf | default "book.pdf" -}}
+    {{- $pdf := $book.Resources.GetMatch $pdfName -}}
+    {{- if not $pdf -}}
+        {{- warnf "books: %s 找不到 PDF 资源 %q（把文件放进书目目录，或在 front matter 里改 pdf 字段）" $book.RelPermalink $pdfName -}}
+    {{- end -}}
+    {{- $cover := $book.Resources.GetMatch ($book.Params.cover | default "cover.*") -}}
+    {{- if not $cover -}}
+        {{- range first 1 ($book.Resources.ByType "image") -}}
+            {{- $cover = . -}}
+        {{- end -}}
+    {{- end -}}
+
+    <article class="book-detail">
+        <header class="book-detail-header">
+            <div class="book-detail-cover">
+                {{ with $cover }}
+                    <img src="{{ .RelPermalink }}" alt="{{ $book.Title }} 封面">
+                {{ else }}
+                    <span class="book-detail-cover-title">{{ $book.Title }}</span>
+                {{ end }}
+            </div>
+
+            <div class="book-detail-meta">
+                <p class="book-detail-kicker">LIBRARY / BOOK</p>
+                <h1 class="book-detail-title">{{ $book.Title }}</h1>
+
+                {{ with $book.Params.author }}
+                    <p class="book-detail-author">{{ if reflect.IsSlice . }}{{ delimit . " / " }}{{ else }}{{ . }}{{ end }}</p>
+                {{ end }}
+
+                {{ with $book.Params.summary }}
+                    <p class="book-detail-summary">{{ . }}</p>
+                {{ end }}
+
+                <div class="book-detail-facts">
+                    {{ with $book.Params.publishYear }}<span>{{ . }} 年</span>{{ end }}
+                    {{ with $book.Params.publisher }}<span>{{ . }}</span>{{ end }}
+                    {{ with $book.Params.language }}<span>{{ . }}</span>{{ end }}
+                </div>
+
+                {{ with $book.Params.tags }}
+                    <div class="book-detail-tags">
+                        {{ range . }}<span class="book-tag">{{ . }}</span>{{ end }}
+                    </div>
+                {{ end }}
+
+                <div class="book-detail-actions">
+                    {{ with $pdf }}
+                        <a class="book-action -primary" href="{{ .RelPermalink }}" target="_blank" rel="noopener">在线阅读</a>
+                        <a class="book-action" href="{{ .RelPermalink }}" download>下载 PDF</a>
+                    {{ end }}
+                    {{ with site.GetPage "/books" }}
+                        <a class="book-action" href="{{ .RelPermalink }}">返回书架</a>
+                    {{ end }}
+                </div>
+            </div>
+        </header>
+
+        {{ with $book.Content }}
+            <div class="book-detail-content article-content">{{ . }}</div>
+        {{ end }}
+
+        {{ with $pdf }}
+            <section class="book-viewer">
+                <div class="book-viewer-head">
+                    <h2 class="book-viewer-title">在线阅读</h2>
+                    <a class="book-viewer-link" href="{{ .RelPermalink }}" target="_blank" rel="noopener">在新窗口打开</a>
+                </div>
+                <iframe class="book-viewer-frame" src="{{ .RelPermalink }}#view=FitH" title="{{ $book.Title }} PDF 预览" loading="lazy"></iframe>
+            </section>
+        {{ end }}
+    </article>
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}
