@@ -3,6 +3,7 @@
 {{- range .Sites -}}
 {{- $allPosts = $allPosts | append (where .RegularPages "Section" "post") -}}
 {{- end -}}
+{{- $bookCount := len (where .Site.RegularPages "Section" "books") -}}
 
 {{/* Calculate Statistics */}}
 {{- $totalWords := 0 -}}
@@ -84,6 +85,24 @@
                 <div class="stat-content">
                     <span class="stat-value" id="stats-runtime-days">0</span>
                     <span class="stat-label">{{ T "stats.runtime" | default "运行天数" }}</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon book-count-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-book" width="32"
+                        height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path>
+                        <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path>
+                        <path d="M3 6l0 13"></path>
+                        <path d="M12 6l0 13"></path>
+                        <path d="M21 6l0 13"></path>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ $bookCount }}</span>
+                    <span class="stat-label">{{ T "stats.books" | default "已有书目" }}</span>
                 </div>
             </div>
         </div>
@@ -546,8 +565,7 @@
     /* 2. 卡片放大 */
     .stats-cards {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        /* 强制3列，更宽敞 */
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 2rem;
         margin-bottom: 2rem;
     }
@@ -600,6 +618,10 @@
 
     .runtime-icon {
         background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+    }
+
+    .book-count-icon {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
     }
 
     .stat-content {
@@ -932,9 +954,9 @@
     }
 
     /* Responsive */
-    @media (max-width: 1024px) {
+    @media (max-width: 1280px) {
         .stats-cards {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 
