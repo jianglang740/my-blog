@@ -34,7 +34,7 @@ directions:
   - id: "engineering"
     name: "研究工程化"
     question: "如何让研究可复现、可持续迭代？"
-    summary: "数据管道、实验记录、报告自动化，以及用 Streamlit 做交互式展示。"
+    summary: "回测框架、数据管道、实验记录、报告自动化，以及用 Streamlit 做交互式展示。"
     status: "active"
 ---
 
