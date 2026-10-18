@@ -10,7 +10,7 @@ directions:
     name: "宏观研究"
     question: "CTA 的收益来自哪里，又受哪些市场环境影响？"
     summary: "我国及主要国家的期货市场现状与交易规则、CTA 的定义与策略谱系、商品周期性与品种间相关性。"
-    status: "planned"
+    status: "active"
   - id: "trend"
     name: "趋势跟踪"
     question: "如何识别并跟随可持续的趋势？"
