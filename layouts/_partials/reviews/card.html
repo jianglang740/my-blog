@@ -1,0 +1,37 @@
+{{- $page := . -}}
+{{- $cover := false -}}
+{{- with $page.Resources.ByType "image" -}}
+    {{- $cover = index . 0 -}}
+{{- end -}}
+
+<a class="review-card" href="{{ $page.RelPermalink }}">
+    <div class="review-card-media">
+        {{ with $cover }}
+            <img src="{{ .RelPermalink }}" alt="{{ $page.Title }}" loading="lazy">
+        {{ else }}
+            {{- /* 没有截图时，用时段（上午/晚间）占位；日期已经由角标显示，不再重复 */ -}}
+            <span class="review-card-placeholder">{{ $page.Params.session | default "复盘" }}</span>
+        {{ end }}
+        <span class="review-card-day">{{ $page.Date.Format "01.02" }}</span>
+    </div>
+
+    <div class="review-card-body">
+        <div class="review-card-meta">
+            <time datetime="{{ $page.Date.Format "2006-01-02" }}">{{ $page.Date.Format "2006年01月02日" }}</time>
+            {{ with $page.Params.session }}<span class="review-session">{{ . }}</span>{{ end }}
+            {{ if $page.Draft }}<span class="review-draft">草稿</span>{{ end }}
+        </div>
+
+        <h3 class="review-card-title">{{ $page.Title }}</h3>
+
+        {{ with $page.Params.summary }}
+            <p class="review-card-summary">{{ . }}</p>
+        {{ end }}
+
+        {{ with $page.Params.tags }}
+            <div class="review-card-tags">
+                {{ range first 3 . }}<span>{{ . }}</span>{{ end }}
+            </div>
+        {{ end }}
+    </div>
+</a>

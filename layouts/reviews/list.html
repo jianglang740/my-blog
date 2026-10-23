@@ -1,0 +1,45 @@
+{{ define "body-class" }}reviews-page{{ end }}
+
+{{ define "main" }}
+    {{- $pages := .RegularPages.ByDate.Reverse -}}
+
+    <div class="reviews-dashboard">
+        <header class="reviews-header">
+            <p class="reviews-kicker">{{ .Params.kicker | default "TRADING / JOURNAL" }}</p>
+            <h1 class="reviews-title">{{ .Title }}</h1>
+            <p class="reviews-description">{{ .Description }}</p>
+
+            <div class="reviews-meta">
+                <span>{{ len $pages }} 篇复盘</span>
+                {{ if $pages }}
+                    {{ with index $pages 0 }}
+                        <span>最近更新 {{ .Date.Format "2006年01月02日" }}</span>
+                    {{ end }}
+                {{ end }}
+            </div>
+        </header>
+
+        {{ with .Content }}
+            <div class="reviews-intro">{{ . }}</div>
+        {{ end }}
+
+        {{ if $pages }}
+            {{ range $pages.GroupByDate "2006年01月" }}
+                <section class="reviews-month">
+                    <h2 class="reviews-month-title">{{ .Key }}</h2>
+                    <div class="reviews-grid">
+                        {{ range .Pages }}
+                            {{ partial "reviews/card.html" . }}
+                        {{ end }}
+                    </div>
+                </section>
+            {{ end }}
+        {{ else }}
+            <p class="reviews-empty">{{ .Params.emptyMessage | default "还没有复盘记录。" }}</p>
+        {{ end }}
+    </div>
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}
+
+{{ define "right-sidebar" }}{{ end }}

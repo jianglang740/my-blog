@@ -1,0 +1,238 @@
+/* 每日交易复盘：/reviews/ 列表页
+ * 数据由 Hugo 从 content/reviews/ 的页面自动计算，这里只负责排版。 */
+
+.reviews-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-separation);
+    min-width: 0;
+}
+
+/* ---------- 页头 ---------- */
+
+.reviews-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.reviews-kicker {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+}
+
+.reviews-title {
+    margin: 0;
+    font-size: 3.2rem;
+    line-height: 1.2;
+    color: var(--card-text-color-main);
+}
+
+.reviews-description {
+    margin: 0;
+    max-width: 68ch;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: var(--card-text-color-secondary);
+}
+
+.reviews-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs) var(--spacing-lg);
+    margin-top: var(--spacing-xs);
+    font-size: 1.3rem;
+    color: var(--card-text-color-tertiary);
+}
+
+.reviews-intro {
+    max-width: 72ch;
+
+    > :first-child {
+        margin-top: 0;
+    }
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* ---------- 月份分组 ---------- */
+
+.reviews-month {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.reviews-month-title {
+    margin: 0;
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid var(--card-separator-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--card-text-color-main);
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-md);
+
+    @include respond(md) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ---------- 复盘卡片 ---------- */
+
+.review-card {
+    @include card-style;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        border-color: rgba(var(--accent-color-rgb), 0.35);
+        box-shadow: var(--shadow-l2);
+
+        .review-card-media img {
+            transform: scale(1.03);
+        }
+    }
+}
+
+.review-card-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--body-background);
+
+    img {
+        width: 100%;
+        height: 100%;
+        /* 盘面截图宽高比不统一，裁切会把右侧价格轴切掉，所以整图缩放 */
+        object-fit: contain;
+        display: block;
+        transition: transform 0.35s ease;
+    }
+}
+
+.review-card-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--card-text-color-tertiary);
+}
+
+.review-card-day {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    background: var(--accent-color);
+    color: var(--accent-color-text);
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.review-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+}
+
+.review-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-sm);
+    font-size: 1.2rem;
+    color: var(--card-text-color-tertiary);
+}
+
+.review-session,
+.review-draft {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.review-session {
+    background: rgba(var(--accent-color-rgb), 0.1);
+    color: var(--accent-color);
+}
+
+.review-draft {
+    background: rgba(154, 107, 0, 0.12);
+    color: #9a6b00;
+}
+
+.review-card-title {
+    margin: 0;
+    font-size: 1.8rem;
+    line-height: 1.35;
+    color: var(--card-text-color-main);
+}
+
+.review-card-summary {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    font-size: 1.35rem;
+    line-height: 1.65;
+    color: var(--card-text-color-secondary);
+}
+
+.review-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: auto;
+    padding-top: var(--spacing-xs);
+
+    span {
+        padding: 0.1rem 0.5rem;
+        border-radius: 999px;
+        background: var(--body-background);
+        font-size: 1.1rem;
+        color: var(--card-text-color-tertiary);
+    }
+}
+
+.reviews-empty {
+    margin: 0;
+    padding: var(--spacing-lg);
+    border: 1px dashed var(--card-separator-color);
+    border-radius: 12px;
+    text-align: center;
+    color: var(--card-text-color-tertiary);
+}
+
+[data-scheme="dark"] .review-draft {
+    background: rgba(255, 193, 7, 0.16);
+    color: #ffc107;
+}
