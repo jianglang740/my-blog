@@ -4,6 +4,7 @@
 {{- $allPosts = $allPosts | append (where .RegularPages "Section" "in" (slice "post" "factor" "cta" "reviews")) -}}
 {{- end -}}
 {{- $bookCount := len (where .Site.RegularPages "Section" "books") -}}
+{{- $reviewCount := len (where .Site.RegularPages "Section" "reviews") -}}
 
 {{/* Calculate Statistics */}}
 {{- $totalWords := 0 -}}
@@ -85,6 +86,22 @@
                 <div class="stat-content">
                     <span class="stat-value" id="stats-runtime-days">0</span>
                     <span class="stat-label">{{ T "stats.runtime" | default "运行天数" }}</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon review-count-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notebook" width="32"
+                        height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-11a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1m3 0v18"></path>
+                        <path d="M13 8l2 0"></path>
+                        <path d="M13 12l2 0"></path>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ $reviewCount }}</span>
+                    <span class="stat-label">{{ T "stats.reviews" | default "已有复盘篇数" }}</span>
                 </div>
             </div>
             <div class="stat-card">
@@ -565,19 +582,19 @@
     /* 2. 卡片放大 */
     .stats-cards {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
     .stat-card {
         background: var(--card-background);
-        padding: 2rem 2.5rem;
-        /* 增加内边距 */
+        padding: 1.8rem 1.5rem;
+        /* 5 张卡片并排，内边距收窄一点 */
         border-radius: 20px;
         display: flex;
         align-items: center;
-        gap: 2rem;
+        gap: 1.2rem;
         box-shadow: var(--shadow-l1);
         border: 1px solid var(--card-border-color);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -597,9 +614,9 @@
     }
 
     .stat-icon {
-        width: 64px;
+        width: 52px;
         /* 放大图标背景 */
-        height: 64px;
+        height: 52px;
         border-radius: 16px;
         display: flex;
         align-items: center;
@@ -620,6 +637,10 @@
         background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
     }
 
+    .review-count-icon {
+        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    }
+
     .book-count-icon {
         background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
     }
@@ -631,7 +652,7 @@
     }
 
     .stat-value {
-        font-size: 2.5rem;
+        font-size: 2.3rem;
         /* 放大数字 */
         font-weight: 800;
         color: var(--card-text-color-main);
@@ -639,10 +660,11 @@
     }
 
     .stat-label {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
         color: var(--card-text-color-secondary);
         font-weight: 500;
         margin-top: 6px;
+        white-space: nowrap;
     }
 
     /* Layout Sections */
@@ -956,7 +978,7 @@
     /* Responsive */
     @media (max-width: 1280px) {
         .stats-cards {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
         }
     }
 
