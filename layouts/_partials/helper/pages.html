@@ -10,7 +10,10 @@
 {{- if .IsHome -}}
     {{- $pages = where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
 {{- else if and (eq .Kind "section") (eq .Section "blog") -}}
+    {{/* /blog/ 是「文章」入口：按日期倒序，新文章在第一页。
+         课程分区（如 /post/freqtrade）仍走下面的分支，保留 weight 课序。 */}}
     {{- $pages = where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+    {{- $pages = $pages.ByDate.Reverse -}}
 {{- else if or (eq .Kind "section") (eq .Kind "taxonomy") (eq .Kind "term") -}}
     {{- $subsections := .Sections -}}
     {{- $pages = .Pages | complement $subsections -}}
