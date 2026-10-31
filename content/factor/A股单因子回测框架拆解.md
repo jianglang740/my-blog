@@ -1,5 +1,5 @@
 ---
-title: "A股单因子回测框架拆解：从两份 parquet 到分层回测"
+title: "A股单因子回测框架拆解：从两份 parquet 到IC法分层回测"
 date: 2026-10-18
 lastmod: 2026-10-18
 draft: false
