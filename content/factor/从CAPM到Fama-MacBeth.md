@@ -5,7 +5,7 @@ lastmod: 2026-10-31
 draft: false
 group: "construction"
 status: "done"
-summary: "从收益率、系统性风险与风险溢价讲起，完整推导 CAPM、APT、Fama-French 三因子与五因子，再把 Fama-MacBeth 两阶段回归拆成时间序列估 Beta、逐期截面估 Gamma、时间平均做推断三步，最后落到 A 股与加密货币的实证陷阱和 Python 实现。"
+summary: "从收益率、系统性风险与风险溢价讲起，完整推导 CAPM、APT、Fama-French 三因子与五因子，再把 Fama-MacBeth 两阶段回归拆成时间序列估 Beta、逐期截面估 Gamma、时间平均做推断三步，最后落到实证细节、常见陷阱、加密货币迁移与 Python 实现。"
 tags: ["多因子", "资产定价", "CAPM", "Fama-French", "Fama-MacBeth", "计量经济学"]
 math: true
 comments: false
