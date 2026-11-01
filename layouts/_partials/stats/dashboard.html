@@ -88,6 +88,7 @@
                     <span class="stat-label">{{ T "stats.runtime" | default "运行天数" }}</span>
                 </div>
             </div>
+            {{ if gt $reviewCount 0 }}
             <div class="stat-card">
                 <div class="stat-icon review-count-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-notebook" width="32"
@@ -104,6 +105,7 @@
                     <span class="stat-label">{{ T "stats.reviews" | default "已有复盘篇数" }}</span>
                 </div>
             </div>
+            {{ end }}
             <div class="stat-card">
                 <div class="stat-icon book-count-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-book" width="32"

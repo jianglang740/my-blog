@@ -3,6 +3,17 @@ title: "每日交易复盘"
 description: "按交易日记录盘面判断、进出场决策、截图证据与事后反思"
 kicker: "TRADING / JOURNAL"
 emptyMessage: "还没有复盘记录。"
+# 功能区暂时下线：保留全部复盘内容，但不生成页面、不进入统计与搜索。
+# 恢复时删掉 build 与 cascade 两段即可。
+build:
+  render: never
+  list: never
+  publishResources: false
+cascade:
+  build:
+    render: never
+    list: never
+    publishResources: false
 ---
 
 这里按天记录我的交易复盘：当天看到的盘面、实际做了什么、当时的判断依据，以及事后看哪些地方做对了、哪些地方是在给自己找理由。

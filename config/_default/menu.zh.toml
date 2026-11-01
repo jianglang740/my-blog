@@ -6,13 +6,16 @@
     [main.params]
         icon = "home"
 
-[[main]]
-    identifier = "reviews"
-    name       = "每日复盘"
-    pageRef    = "/reviews"
-    weight     = 5
-    [main.params]
-        icon = "notebook"
+# 「每日复盘」功能区暂时下线（2026-11-01）。
+# 内容仍保留在 content/reviews/；恢复时取消下面的注释，并移除
+# content/reviews/_index.zh.md 里的 build/cascade 设置。
+# [[main]]
+#     identifier = "reviews"
+#     name       = "每日复盘"
+#     pageRef    = "/reviews"
+#     weight     = 5
+#     [main.params]
+#         icon = "notebook"
 
 [[main]]
     identifier = "books"
