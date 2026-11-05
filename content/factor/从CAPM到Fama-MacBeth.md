@@ -1,11 +1,11 @@
 ---
 title: "从 CAPM 到 Fama-French，再到 Fama-MacBeth：资产定价与多因子检验系统笔记"
 date: 2026-10-31
-lastmod: 2026-10-31
+lastmod: 2026-11-05
 draft: false
 group: "construction"
 status: "done"
-summary: "从收益率、系统性风险与风险溢价讲起，完整推导 CAPM、APT、Fama-French 三因子与五因子，再把 Fama-MacBeth 两阶段回归拆成时间序列估 Beta、逐期截面估 Gamma、时间平均做推断三步，最后落到实证细节、常见陷阱、加密货币迁移与 Python 实现。"
+summary: "从收益率、系统性风险与风险溢价讲起，完整推导 CAPM、APT、Fama-French 三因子与五因子，用 GRS 检验判断多个资产的 Alpha 是否联合为零，再把 Fama-MacBeth 两阶段回归拆成时间序列估 Beta、逐期截面估 Gamma、时间平均做推断三步，最后落到实证细节、常见陷阱、加密货币迁移与 Python 实现。"
 tags: ["多因子", "资产定价", "CAPM", "Fama-French", "Fama-MacBeth", "计量经济学"]
 math: true
 comments: false
@@ -18,7 +18,7 @@ license: false
 >
 > **学习目标：** 从理解为什么资产需要风险溢价开始，逐步掌握如何构建多因子定价模型，以及如何利用历史金融数据检验因子是否具有定价能力。
 >
-> **阅读路径：** 全文按“理论直觉 → 数学推导 → 实证方法 → 代码实现”推进，共十三个部分。第一次读可以先看第一、二、五部分，把 CAPM 与 Fama-MacBeth 的主线串起来；第三、四、七部分补足 APT 与 Fama-French 的来龙去脉；第八、九部分讨论实证细节与陷阱；第十部分把框架迁移到加密货币；第十一至十三部分是代码、学习路线与文献。每一部分都可以单独回看，但 \( \beta \) 与 \( \gamma \) 的区别贯穿始终，是理解全套方法的关键。
+> **阅读路径：** 全文按“理论直觉 → 数学推导 → 实证方法 → 代码实现”推进，共十三个部分。第一次读可以先看第一、二、五部分，把 CAPM 与 Fama-MacBeth 的主线串起来；第三、四、七部分补足 APT 与 Fama-French 的来龙去脉；第八部分介绍时间序列回归、GRS 联合检验与 Fama-MacBeth 等实证方法，第九部分讨论实证细节与陷阱；第十部分把框架迁移到加密货币；第十一至十三部分是代码、学习路线与文献。每一部分都可以单独回看，但 \( \beta \) 与 \( \gamma \) 的区别贯穿始终，是理解全套方法的关键。
 >
 > **前置知识：** 期望、方差、协方差与一元线性回归；会用 Python 读写表格数据即可。文中的矩阵推导不要求预先学过线性代数，遇到不熟悉的符号可以随时翻到 12.2 节的符号表。
 >
@@ -1121,7 +1121,9 @@ FF3 比 CAPM 多了两个因子。
 
 资产定价模型更重要的检验目标，是它能否解释资产之间的预期收益率差异，而不只是解释单只股票收益率的时间序列波动。
 
-这就引出了 Fama-MacBeth 回归。
+一种直接的做法是：把所有测试资产的 Alpha 放在一起，检验它们是否联合为零。这就是 GRS 检验要解决的问题，第八部分会详细展开。
+
+而如果要进一步估计每个因子的风险价格，就需要 Fama-MacBeth 回归。
 
 ---
 
@@ -1647,7 +1649,7 @@ MOM 是动量因子（Momentum）。
 
 现在需要建立一个完整的实证检验框架。
 
-这里将几种经常使用的方法放在一起。
+这里将几种经常使用的方法放在一起：单因子和多因子时间序列回归、联合检验 Alpha 的 GRS 检验、Fama-MacBeth 两阶段回归，以及分组排序法。
 
 ### 8.1 单因子时间序列回归
 
@@ -1682,7 +1684,180 @@ MOM 是动量因子（Momentum）。
 
 CAPM、FF3、FF5、Carhart 等模型的时间序列检验。
 
-### 8.3 Fama-MacBeth 两阶段回归
+### 8.3 GRS 检验：Alpha 是否联合为零
+
+多因子时间序列回归通常是逐只资产看 Alpha 的 t 统计量。
+
+但只要资产数量超过一两个，这种做法就会遇到问题：
+
+- 有 \(N\) 个资产就有 \(N\) 个 Alpha。逐个做 5% 显著性检验，至少误判一个的概率约为 \(1-0.95^N\)；\(N=25\) 时已经超过 70%。
+- 不同资产的回归残差往往相关。共同遗漏的因子会让多个 Alpha 同向变动，单个 t 检验之间并不独立。
+- 反过来，每个 Alpha 单独看都不显著，放在一起却可能呈现系统性的同向偏离。
+
+GRS 检验（Gibbons, Ross, Shanken, 1989）解决的就是这个问题：它把所有测试资产的 Alpha 放在一起，检验它们是否同时为零。
+
+这个检验最初用于回答“给定的投资组合（例如市场组合）是否位于均值方差有效前沿上”，所以论文标题是 *A Test of the Efficiency of a Given Portfolio*。用在 CAPM 上，就是检验市场组合是否有效；用在多因子模型上，就是检验这组因子能否把测试资产的 Alpha 全部解释掉。
+
+#### 检验的设定
+
+对 \(N\) 个资产、\(T\) 期观测、\(K\) 个因子，分别做时间序列回归：
+
+\[ R_{i,t}-R_{f,t} = \alpha_i + \sum_{k=1}^{K}\beta_{ik}F_{k,t} + \epsilon_{i,t} \]
+
+把所有资产堆叠成向量：
+
+\[ \mathbf{R}_t-\mathbf{1}R_{f,t}=\boldsymbol{\alpha}+\mathbf{B}\mathbf{F}_t+\boldsymbol{\epsilon}_t \]
+
+其中：
+
+- \(\mathbf{R}_t\) 是 \(N\times1\) 的资产收益率向量。
+- \(\mathbf{1}\) 是全 1 向量，\(\mathbf{B}\) 是 \(N\times K\) 的 Beta 矩阵。
+- \(\mathbf{F}_t\) 是 \(K\times1\) 的因子收益率向量。
+- \(\boldsymbol{\alpha}\) 是 \(N\times1\) 的截距向量，\(\boldsymbol{\epsilon}_t\) 是 \(N\times1\) 的残差向量。
+
+原假设和备择假设：
+
+\[ H_0:\boldsymbol{\alpha}=\mathbf{0} \]
+
+\[ H_1:\boldsymbol{\alpha}\neq\mathbf{0} \]
+
+备择假设的含义是“至少有一个 Alpha 不为零”，而不是“所有 Alpha 都不为零”。
+
+如果模型正确定价这 \(N\) 个测试资产，那么所有 Alpha 应该联合为零。
+
+#### 统计量
+
+先定义四个样本量：
+
+\[ \hat{\boldsymbol{\alpha}} \]
+
+是每只资产单独做 OLS 得到的截距向量。
+
+\[ \hat{\boldsymbol{\Sigma}}=\frac{1}{T}\sum_{t=1}^{T}\hat{\boldsymbol{\epsilon}}_t\hat{\boldsymbol{\epsilon}}_t^{\top} \]
+
+是 \(N\times N\) 的残差协方差矩阵。
+
+\[ \bar{\mathbf{F}}=\frac{1}{T}\sum_{t=1}^{T}\mathbf{F}_t \]
+
+是因子收益率的样本均值。
+
+\[ \hat{\boldsymbol{\Omega}}_F=\frac{1}{T}\sum_{t=1}^{T}(\mathbf{F}_t-\bar{\mathbf{F}})(\mathbf{F}_t-\bar{\mathbf{F}})^{\top} \]
+
+是 \(K\times K\) 的因子协方差矩阵。
+
+GRS 统计量为：
+
+\[ \mathrm{GRS}=\frac{T-N-K}{N}\left(1+\bar{\mathbf{F}}^{\top}\hat{\boldsymbol{\Omega}}_F^{-1}\bar{\mathbf{F}}\right)^{-1}\hat{\boldsymbol{\alpha}}^{\top}\hat{\boldsymbol{\Sigma}}^{-1}\hat{\boldsymbol{\alpha}} \]
+
+在原假设成立、残差服从联合正态分布、因子被视为可直接观测的组合收益等条件下：
+
+\[ \mathrm{GRS}\sim F(N,T-N-K) \]
+
+使用这个分布要求 \(T-N-K>0\)。
+
+这个公式可以拆成三部分理解：
+
+1. \(\hat{\boldsymbol{\alpha}}^{\top}\hat{\boldsymbol{\Sigma}}^{-1}\hat{\boldsymbol{\alpha}}\) 是 Alpha 向量在残差协方差度量下的平方长度。它用 \(\hat{\boldsymbol{\Sigma}}^{-1}\) 给每个 Alpha 加权：残差波动小的资产权重大；资产之间的残差相关性通过 \(\hat{\boldsymbol{\Sigma}}\) 的非对角元素进入检验，而不是像逐个 t 检验那样被忽略。残差波动大的资产也不会仅凭一个大的 Alpha 主导结果。
+2. \(1+\bar{\mathbf{F}}^{\top}\hat{\boldsymbol{\Omega}}_F^{-1}\bar{\mathbf{F}}\) 是 \(1\) 加上因子组合的样本夏普比率平方。它修正了因子均值本身也是估计量这一事实。如果因子不是可交易组合，或者 Beta 是估计出来的，这一项的分布需要 Shanken 修正或 bootstrap。
+3. \(\frac{T-N-K}{N}\) 是自由度调整，把二次型转换成 F 统计量。\(N\) 越大、\(K\) 越大，同样的 Alpha 向量得到的统计量越小。
+
+一个容易被忽略的性质是：GRS 统计量对测试资产的可逆线性变换不变。把 \(N\) 只股票重新组合成 \(N\) 个其他组合，只要变换矩阵可逆，统计量不变。这意味着在理论上，先分组再做 GRS 不会改变结果；真正改变结果的是测试资产的张成空间，以及实践中因估计误差和缺失数据造成的差异。
+
+#### 与最大夏普比率的关系
+
+GRS 统计量还可以写成：
+
+\[ \hat{\boldsymbol{\alpha}}^{\top}\hat{\boldsymbol{\Sigma}}^{-1}\hat{\boldsymbol{\alpha}}=\widehat{SR}_{max}^{2}-\widehat{SR}_{F}^{2} \]
+
+其中 \(\widehat{SR}_{max}\) 是把 \(N\) 个测试资产和 \(K\) 个因子放在一起时能够达到的最大夏普比率，\(\widehat{SR}_{F}\) 是只使用 \(K\) 个因子时能够达到的最大夏普比率。
+
+这个等式给出了 GRS 检验的经济含义：
+
+它检验的是“把测试资产加入因子组合后，可达到的最大夏普比率是否显著提高”。
+
+如果模型正确，因子组合已经位于这些测试资产的效率前沿上，再加入测试资产不会带来新的定价信息，最大夏普比率不会显著提高，所有 Alpha 联合为零。
+
+如果存在系统性的 Alpha，说明测试资产中还有因子没有捕捉到的收益维度，最大夏普比率可以进一步提高。
+
+对 CAPM 来说，市场组合有效等价于所有资产相对市场因子的 Alpha 联合为零；GRS 检验就是把“市场组合是否有效”变成一个可以计算的 F 检验。
+
+#### 一个可以手算的例子
+
+假设：
+
+- \(N=5\) 个测试组合，\(K=3\) 个因子，\(T=120\) 个月。
+- 五个组合的月度 Alpha 分别为 \(0.30\%\)、\(0.10\%\)、\(0.25\%\)、\(-0.05\%\)、\(0.15\%\)。
+- 为便于手算，假设五个组合的残差标准差都等于 \(1\%\)，且残差之间不相关。
+- 因子组合的月度夏普比率为 \(0.14\)，所以 \(1+SR_F^2=1+0.14^2=1.0196\)。
+
+Alpha 与残差标准差都以百分数为单位，比值无量纲，因此可以直接计算：
+
+\[ \hat{\boldsymbol{\alpha}}^{\top}\hat{\boldsymbol{\Sigma}}^{-1}\hat{\boldsymbol{\alpha}}=0.30^2+0.10^2+0.25^2+(-0.05)^2+0.15^2=0.1875 \]
+
+代入统计量：
+
+\[ \mathrm{GRS}=\frac{120-5-3}{5}\times\frac{0.1875}{1.0196}=\frac{112}{5}\times\frac{0.1875}{1.0196}\approx4.12 \]
+
+在 \(F(5,112)\) 分布下，5% 临界值约为 2.30，1% 临界值约为 3.19，对应的 p 值约为 0.0018。
+
+所以拒绝原假设：这五个组合的 Alpha 不能认为联合为零。
+
+作为对照，逐个计算 Alpha 的 t 统计量：
+
+\[ t_i=\frac{\hat{\alpha}_i}{s_i/\sqrt{T}} \]
+
+五个 t 值分别约为 \(3.29\)、\(1.10\)、\(2.74\)、\(-0.55\)、\(1.64\)。在双侧 5% 下，只有第一个和第三个显著，其余三个单独看都不显著。
+
+这个例子说明了联合检验和逐个检验的区别：单个 Alpha 的证据可能很弱，但多个 Alpha 同向偏离时，联合检验能够识别出整体上的定价误差。反过来说，如果 GRS 不显著，也不应因为众多 Alpha 中某一个 t 值较大就断定模型失败——在多次检验下，个别显著可能只是抽样波动。
+
+#### 使用前提与常见误用
+
+GRS 检验的 F 分布依赖一组较强的假设：
+
+- 残差在时间上独立同分布，且服从联合正态分布。
+- 残差协方差矩阵在样本期内不变，没有异方差或结构突变。
+- 因子被视为可直接观测的组合收益，不带估计误差。
+- 所有测试资产使用同一组时间区间，构成平衡面板。
+- \(T\) 必须大于 \(N+K\)，否则 \(\hat{\boldsymbol{\Sigma}}\) 不可逆或接近奇异。
+
+在这些假设不满足时，F 分布只是近似，常见处理方式包括：
+
+- 用 Shanken 修正处理 Beta 估计误差。
+- 用 bootstrap 或 GMM 构造 Wald 统计量，放松正态假设。
+- 用 Newey-West 类方法处理残差自相关。
+- 先用分组或主成分方法降低维度，再对组合做检验。
+
+还需要注意几个常见误用：
+
+1. **把“拒绝”理解成“模型完全错误”。** 拒绝只说明至少有一个 Alpha 非零，不说明是哪个资产、哪个因子出了问题。
+2. **把“不拒绝”理解成“模型正确”。** GRS 只检验这组测试资产是否被正确定价，不检验因子是否遗漏、不检验样本外表现，也不检验经济显著性。
+3. **测试资产越多越好。** \(N\) 越大，残差协方差矩阵越难估计，检验也越容易因为极小的残差方差而过度拒绝。经典做法是把股票按特征分组，用数量可控的组合做测试资产。
+4. **忽略测试资产的选择。** 同一模型对不同测试资产集合可能得到不同结论。GRS 的结果必须和测试资产的构造方式一起报告。
+5. **在非正态、厚尾数据上直接套 F 分布。** 加密货币收益率尤其明显，极端值会让协方差估计和 F 近似同时失真。
+
+#### 与 Fama-MacBeth 的分工
+
+GRS 和 Fama-MacBeth 都在检验资产定价模型，但检验的对象不同：
+
+| 维度 | GRS 检验 | Fama-MacBeth |
+|---|---|---|
+| 回归方向 | 时间序列回归 | 逐期截面回归 |
+| 原假设 | 所有 Alpha 联合为零 | 各因子平均风险价格为零，或定价约束成立 |
+| 核心输入 | 资产收益率、因子收益率、残差协方差 | 第一阶段 Beta 或资产特征、逐期截面收益率 |
+| 输出 | 一个联合 F 统计量和一个 p 值 | 每个因子的平均风险溢价、标准误和 t 统计量 |
+| 主要优点 | 考虑残差相关，控制联合检验的规模 | 能估计风险价格，能处理非交易因子和资产特征 |
+| 主要局限 | 对正态性和平衡面板敏感，只说联合显著 | 对 Beta 估计误差和标准误设定敏感 |
+
+两者不是替代关系，而是回答不同的问题：
+
+- GRS 问的是：这组因子能不能把这组资产的 Alpha 全部解释掉？
+- Fama-MacBeth 问的是：市场为每个因子的风险暴露支付了多少价格？
+
+一个典型的实证流程是：构造因子收益率，对测试资产做时间序列回归，用 GRS 检验 Alpha 是否联合为零，再用 Fama-MacBeth 估计各因子的风险价格，最后用分组排序和样本外数据做稳健性检查。
+
+GRS 更接近对模型整体的否决式检验，Fama-MacBeth 更接近对单个因子定价能力的分解。
+
+### 8.4 Fama-MacBeth 两阶段回归
 
 研究目标：
 
@@ -1694,7 +1869,7 @@ CAPM、FF3、FF5、Carhart 等模型的时间序列检验。
 
 研究因子暴露是否能够解释资产之间的平均收益差异。
 
-### 8.4 分组排序法（Portfolio Sort）
+### 8.5 分组排序法（Portfolio Sort）
 
 这是经典资产定价研究中非常重要的方法。
 
@@ -1738,7 +1913,7 @@ CAPM、FF3、FF5、Carhart 等模型的时间序列检验。
 
 这比单纯观察一个回归系数更容易解释。
 
-### 8.5 Fama-MacBeth 与分组排序的区别
+### 8.6 Fama-MacBeth 与分组排序的区别
 
 | 维度 | 分组排序 | Fama-MacBeth |
 |---|---|---|
@@ -1799,6 +1974,8 @@ Fama-MacBeth 的一个重要问题是：
 形成投资组合后，对组合收益率估计 Beta。
 
 组合通常具有更低的特有波动率，Beta 估计可能更加稳定。
+
+组合化还有一个实际好处：测试资产数量从上千只降到几十个，残差协方差矩阵才可能稳定估计，GRS 联合检验也才具备可操作性。
 
 然后再对这些投资组合进行第二阶段截面回归。
 
@@ -2056,7 +2233,7 @@ VIF 越大，通常意味着多重共线性越严重。
 
 ## 第十一部分：Python 实现——从数据到 Fama-MacBeth 回归
 
-理论部分结束后，这一部分把前面的两步回归写成可运行的 Python：整理长表、滚动估 Beta、逐期截面回归、对 Gamma 求均值与 t 值，最后用 Newey-West 修正标准误。代码刻意保持最小实现，方便逐行对照公式。
+理论部分结束后，这一部分把前面的两步回归写成可运行的 Python：整理长表、滚动估 Beta、逐期截面回归、对 Gamma 求均值与 t 值，用 Newey-West 修正标准误，最后补一个 GRS 联合检验的实现。代码刻意保持最小实现，方便逐行对照公式。
 
 下面使用 pandas 和 statsmodels 构建一个简化的实证研究框架。
 
@@ -2292,6 +2469,134 @@ def fama_macbeth_hac(series, maxlags=5):
 
 另外，Newey-West 只能解决相应的时间序列协方差估计问题，不能自动解决第一阶段 Beta 估计误差、因子遗漏或模型设定错误。
 
+### 11.6 GRS 联合检验
+
+GRS 检验的输入是第一阶段的时间序列回归结果：每个资产的 Alpha 和残差。
+
+先汇总 Alpha 与残差。GRS 要求所有资产使用同一段样本期，所以先截取所有资产都有观测的共同日期：
+
+```python
+# 只保留所有资产都有完整数据的日期，保证回归样本一致
+valid = data.dropna(subset=["ret"] + factor_cols)
+
+asset_count = valid["asset"].nunique()
+
+common_dates = (
+    valid.groupby("date")["asset"]
+    .nunique()
+    .loc[lambda s: s == asset_count]
+    .index
+)
+
+data = data[data["date"].isin(common_dates)]
+
+alpha_records = {}
+resid_records = {}
+
+for asset, group in data.groupby("asset"):
+
+    group = group.dropna(
+        subset=["ret"] + factor_cols
+    )
+
+    if len(group) < 60:
+        continue
+
+    X = sm.add_constant(
+        group[factor_cols]
+    )
+
+    y = group["ret"]
+
+    model = sm.OLS(y, X).fit()
+
+    alpha_records[asset] = model.params["const"]
+
+    resid_records[asset] = pd.Series(
+        model.resid.to_numpy(),
+        index=group["date"].to_numpy(),
+        name=asset
+    )
+
+# 对齐成平衡面板：只保留所有资产都有残差的日期
+resid = pd.DataFrame(resid_records).dropna()
+
+alphas = np.array([
+    alpha_records[asset]
+    for asset in resid.columns
+])
+```
+
+然后计算统计量：
+
+```python
+from scipy import stats
+
+
+def grs_test(alphas, residuals, factors):
+
+    alphas = np.asarray(alphas).reshape(-1)
+    R = np.asarray(residuals)
+    F = np.asarray(factors)
+
+    T, N = R.shape
+    K = F.shape[1]
+
+    if T <= N + K:
+        raise ValueError("GRS 要求 T > N + K")
+
+    # 使用 1/T 的 ML 协方差，与 GRS 的 F 分布对应
+    Sigma = R.T @ R / T
+
+    f_bar = F.mean(axis=0)
+    F_centered = F - f_bar
+    Omega_F = F_centered.T @ F_centered / T
+
+    # 用 solve 代替显式求逆，数值上更稳定
+    sharpe2 = f_bar @ np.linalg.solve(Omega_F, f_bar)
+    alpha_sigma_alpha = alphas @ np.linalg.solve(Sigma, alphas)
+
+    grs = ((T - N - K) / N) * alpha_sigma_alpha / (1.0 + sharpe2)
+
+    p_value = 1.0 - stats.f.cdf(grs, N, T - N - K)
+
+    return {
+        "GRS": grs,
+        "p_value": p_value,
+        "df1": N,
+        "df2": T - N - K,
+        "alpha_sigma_alpha": alpha_sigma_alpha,
+        "factor_sharpe2": sharpe2
+    }
+```
+
+调用：
+
+```python
+factor_returns = factors.set_index("date").loc[
+    resid.index, factor_cols
+]
+
+result = grs_test(
+    alphas=alphas,
+    residuals=resid.to_numpy(),
+    factors=factor_returns.to_numpy()
+)
+
+print(result)
+```
+
+使用时需要注意：
+
+- `resid` 必须是平衡面板，所有资产在同一组日期上都有残差。上面的 `dropna()` 会丢掉有缺失的日期，正式研究更常见的是先把资产分组，用组合收益率保证面板完整。
+- `alphas` 和 `resid` 必须来自同一组因子、同一段样本期。如果不同资产的估计窗口不同，Alpha 之间就不可比，GRS 的前提也不成立。
+- `ret` 和因子列要与 11.3 的第二阶段保持同一口径。如果使用无风险利率，两者都换成超额收益率；如果研究原始收益率，就都不要减去无风险利率。
+- 这里的 `factors` 如果是超额因子收益率，\(\bar{\mathbf{F}}^{\top}\hat{\boldsymbol{\Omega}}_F^{-1}\bar{\mathbf{F}}\) 才有“因子夏普比率平方”的解释；如果是原始因子收益率，公式仍可计算，但解释要相应调整。
+- 当 \(N\) 接近 \(T\) 时，残差协方差矩阵会变得不稳定甚至奇异。此时应减少测试资产数量、使用收缩估计或伪逆，而不是直接 `solve`。
+- 这个函数假设因子可以直接观测。如果因子本身是估计出来的，需要用 Shanken 修正或 bootstrap 重新构造检验的分布。
+
+GRS 的输出只有一个联合统计量和一个 p 值，它回答的是“这组资产是否被整体正确定价”。想知道是哪个因子定价能力不足，还要回到逐个 Alpha 的分析和 Fama-MacBeth 的风险价格估计。
+
 ---
 
 ## 第十二部分：完整学习路线与知识总结
@@ -2360,6 +2665,7 @@ def fama_macbeth_hac(series, maxlags=5):
 - 因子组合构建。
 - 多因子时间序列回归。
 - Alpha 检验。
+- Alpha 联合检验（GRS）。
 
 核心问题：
 
@@ -2406,13 +2712,14 @@ def fama_macbeth_hac(series, maxlags=5):
 | \(T\) | 时间样本数量 |
 | \(K\) | 因子数量 |
 
-### 12.3 最后用一张表彻底记住四个核心知识点
+### 12.3 最后用一张表彻底记住几个核心知识点
 
 | 知识点 | 需要记住的核心内容 |
 |---|---|
 | CAPM | 市场 Beta 决定资产应获得的市场风险补偿 |
 | APT | 多个因子 Beta 共同决定资产的预期风险溢价 |
 | Fama-French | 将市场、规模、价值等因子转化为实际可计算的因子收益率 |
+| GRS 检验 | 联合检验多个资产的 Alpha 是否同时为零，等价于检验因子组合是否有效 |
 | Fama-MacBeth | 先估计 Beta，再逐期估计 Gamma，最后检验平均风险价格 |
 
 ---
@@ -2517,7 +2824,21 @@ DOI: https://doi.org/10.1086/260061
 - 截面风险价格。
 - 风险溢价的统计检验。
 
-**7. Shanken (1992)**
+**7. Gibbons, Ross and Shanken (1989)**
+
+A Test of the Efficiency of a Given Portfolio.
+
+Econometrica.
+
+DOI: https://doi.org/10.2307/1913625
+
+学习重点：
+
+- 联合检验 Alpha 是否为零。
+- 给定组合的均值方差有效性。
+- GRS 统计量的 F 分布。
+
+**8. Shanken (1992)**
 
 On the Estimation of Beta-Pricing Models.
 
@@ -2533,7 +2854,7 @@ DOI: https://doi.org/10.1093/rfs/5.1.1
 
 ### 13.5 其他延伸论文
 
-**8. Carhart (1997)**
+**9. Carhart (1997)**
 
 On Persistence in Mutual Fund Performance.
 
@@ -2546,7 +2867,7 @@ DOI: https://doi.org/10.1111/j.1540-6261.1997.tb03808.x
 - 动量因子。
 - 四因子模型。
 
-**9. Hou, Xue and Zhang (2015)**
+**10. Hou, Xue and Zhang (2015)**
 
 Digesting Anomalies: An Investment Approach.
 
