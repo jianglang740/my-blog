@@ -43,7 +43,7 @@ Docker 正好对应这四个痛点。下面按我实际学习的顺序整理：�
 
 **虚拟机（VMware、KVM 等）**是在物理机里虚拟出一整台完整的电脑：有独立内核、完整操作系统，体积通常几个 G，启动要几十秒到几分钟，资源开销很大。
 
-可以类比成**租一套完整的毛坯房**：水电、墙面、地板全都单独给你一套。
+可以类比成**租一套完整的毛坯房**：水电、墙面、地板全都是单独一套。
 
 **Docker 容器**不是虚拟机。它不虚拟出完整操作系统，而是在宿主机已有的 Linux 内核之上做一层隔离，把程序本身和它需要的依赖打包在一起。
 
@@ -878,7 +878,7 @@ MySQL 只应该在后端容器所在的内部网络里可达。删除 `ports: 33
 
 **坑 7：容器删了才发现数据在容器里**
 
-数据库、上传文件必须挂载 Volume。执行 `docker compose down -v` 前要确认数据已经备份。备份可以在宿主机执行 `docker compose exec mysql sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > backup.sql`，恢复时把 SQL 导回容器；只备份 Volume 目录也可以，但必须保证数据库处于一致状态。
+数据库、上传文件必须挂载 Volume。执行 `docker compose down -v` 前要确认数据已经备份。备份可以在宿主机执行 `docker compose exec -T mysql sh -c 'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' > backup.sql`，恢复时把 SQL 导回容器；只备份 Volume 目录也可以，但必须保证数据库处于一致状态。
 
 **坑 8：安全组只放了应用端口，却忘了数据库、监控、Portainer 的边界**
 
